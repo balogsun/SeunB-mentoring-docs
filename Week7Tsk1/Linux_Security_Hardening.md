@@ -1,4 +1,4 @@
-### Topic: **Securing Your server Infrastructure: A Comprehensive Guide to Hardening, scaling and Monitoring your servers**
+# Topic: **Securing Your server Infrastructure: A Comprehensive Guide to Hardening, scaling and Monitoring your servers**
 
 **Introduction:**
 
@@ -307,7 +307,6 @@ echo "Configuring firewall..."
 sudo ufw allow 'Apache Full'
 
 # Create a simple HTML file for the custom site
-```
 
 echo "Creating a pizza ordering web page..."
 echo '<!DOCTYPE html>
