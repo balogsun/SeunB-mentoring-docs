@@ -1,4 +1,4 @@
-# Topic: **Securing Your server Infrastructure: A Comprehensive Guide to Hardening, scaling and Monitoring your servers**
+# **Securing Your server Infrastructure: A Comprehensive Guide to Hardening, scaling and Monitoring your servers**
 
 **Introduction:**
 
