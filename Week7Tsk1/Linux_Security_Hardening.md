@@ -1,4 +1,4 @@
-# **Securing Your server Infrastructure: A Comprehensive Guide to Hardening, scaling and Monitoring your servers**
+# **Securing your Cloud Infrastructure: A comprehensive guide to hardening, scaling, automating and monitoring your servers**
 
 **Introduction:**
 
