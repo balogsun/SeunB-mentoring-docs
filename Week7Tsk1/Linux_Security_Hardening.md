@@ -154,24 +154,23 @@ Snippet of the script running
 
 ### Summary of Hardening Steps
 
-Update the server packages.
-
-1. **Disable root login via SSH**: Prevents direct root login, reducing the risk of brute force attacks on the root account.
-2. **Enable logging of sudo commands**: Tracks all commands executed with `sudo`, enhancing accountability and auditability.
-3. **Install and configure UFW (Uncomplicated Firewall)**: Sets up a simple firewall to manage incoming and outgoing traffic.
-4. **Disable unused filesystems**: Prevents the loading of unnecessary and potentially vulnerable filesystems.
-5. **Set strong password policies**: Enforces strong password requirements to reduce the risk of password-based attacks. These settings enforce a minimum password length of 12 characters with at least one digit, uppercase letter, lowercase letter, and special character.
-6. **Disable IPv6 if not needed**: Disables IPv6 to reduce the attack surface if it's not in use.
-7. **Secure shared memory**: Protects shared memory by mounting it with restrictive options.
-8. **Remove unnecessary packages**: Reduces the attack surface by removing unused packages.
-9. **Install and configure rkhunter**: Checks for rootkits and other security issues on the server.
-10. **Set up log file permissions**: Ensures that log files are protected from unauthorized access.
-11. **Configure login banner**: Displays a warning message to users before login, indicating monitoring and restrictions.
-12. **Set up limits on user processes**: Limits the number of processes a user can run, preventing fork bomb attacks.
-13. **Restrict cron jobs to authorized users**: Only allows authorized users to create and edit cron jobs, reducing the risk of malicious cron tasks.
-14. **Restrict access to su command**: Limits access to the `su` command to authorized users, preventing unauthorized privilege escalation.
-15. **Disable core dumps**: Prevents the creation of core dumps, which could contain sensitive information.
-16. **Enable ASLR (Address Space Layout Randomization)**: Randomizes memory addresses, making it more difficult for attackers to exploit vulnerabilities.
+1. **Update the server packages.**
+2. **Disable root login via SSH**: Prevents direct root login, reducing the risk of brute force attacks on the root account.
+3. **Enable logging of sudo commands**: Tracks all commands executed with `sudo`, enhancing accountability and auditability.
+4. **Install and configure UFW (Uncomplicated Firewall)**: Sets up a simple firewall to manage incoming and outgoing traffic.
+5. **Disable unused filesystems**: Prevents the loading of unnecessary and potentially vulnerable filesystems.
+6. **Set strong password policies**: Enforces strong password requirements to reduce the risk of password-based attacks. These settings enforce a minimum password length of 12 characters with at least one digit, uppercase letter, lowercase letter, and special character.
+7. **Disable IPv6 if not needed**: Disables IPv6 to reduce the attack surface if it's not in use.
+8. **Secure shared memory**: Protects shared memory by mounting it with restrictive options.
+9. **Remove unnecessary packages**: Reduces the attack surface by removing unused packages.
+10. **Install and configure rkhunter**: Checks for rootkits and other security issues on the server.
+11. **Set up log file permissions**: Ensures that log files are protected from unauthorized access.
+12. **Configure login banner**: Displays a warning message to users before login, indicating monitoring and restrictions.
+13. **Set up limits on user processes**: Limits the number of processes a user can run, preventing fork bomb attacks.
+14. **Restrict cron jobs to authorized users**: Only allows authorized users to create and edit cron jobs, reducing the risk of malicious cron tasks.
+15. **Restrict access to su command**: Limits access to the `su` command to authorized users, preventing unauthorized privilege escalation.
+16. **Disable core dumps**: Prevents the creation of core dumps, which could contain sensitive information.
+17. **Enable ASLR (Address Space Layout Randomization)**: Randomizes memory addresses, making it more difficult for attackers to exploit vulnerabilities.
 
 This script now focuses on securing a Linux server by implementing a set of essential hardening measures without adding new tools or services beyond those already included.
 
