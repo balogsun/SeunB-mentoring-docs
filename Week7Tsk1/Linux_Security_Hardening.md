@@ -2,7 +2,7 @@
 
 ## **Introduction:**
 
-In today's fast-paced tech environment, launching a new product often requires setting up a secure and scalable web server cluster quickly and efficiently. As a DevOps engineer at a growing startup, your role is critical in ensuring that these servers are not only operational but also secure against potential threats. This guide takes you through a real-world scenario of securing a new web server cluster from scratch, covering everything from initial server hardening to advanced automation and monitoring techniques. By the end, you'll have a robust, repeatable process for securing and managing web servers, ready to be scaled across your infrastructure.
+In today's fast-paced tech environment, launching a new product often requires setting up a secure and scalable web server cluster quickly and efficiently. As a Cloud or DevOps engineer at a growing startup, your role is critical in ensuring that these servers are not only operational but also secure against potential threats. This guide takes you through a real-world scenario of securing a new web server cluster from scratch, covering everything from initial server hardening to advanced automation and monitoring techniques. By the end, you'll have a robust, repeatable process for securing and managing web servers, ready to be scaled across your infrastructure.
 
 Let's walk through creating a repeatable process that can be applied to multiple servers, ensuring they are all configured securely and consistently.
 I will be hardening the system, setting up file integrity monitoring, system audit, central logging solution and finally automating the process with ansible.
