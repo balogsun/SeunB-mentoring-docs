@@ -222,7 +222,7 @@ sudo cp /etc/fail2ban/jail.local /etc/fail2ban/jail.local.bak
 
 # Append new configuration settings to jail.local
 echo "Configuring Fail2ban..."
-sudo bash -c 'echo -e "[DEFAULT]\n# Whitelist your own IPs\nignoreip = 127.0.0.1/8 ::1 192.168.5.0/24 192.168.79.0/24\n\n# Ban time in seconds (e.g., 10 minutes)\nbantime = 600\n\n# Time frame for counting failures in seconds\nfindtime = 600\n\n# Max retry attempts before banning\nmaxretry = 5\n\n[sshd]\nenabled = true\nport = ssh\nlogpath = %(sshd_log)s\nmaxretry = 5" | sudo tee /etc/fail2ban/jail.local > /dev/null'
+sudo bash -c 'echo -e "[DEFAULT]\n# Whitelist your own IPs\nignoreip = 127.0.0.1/8 ::1 <ipadress>/24 <ipadress>/24\n\n# Ban time in seconds (e.g., 10 minutes)\nbantime = 600\n\n# Time frame for counting failures in seconds\nfindtime = 600\n\n# Max retry attempts before banning\nmaxretry = 5\n\n[sshd]\nenabled = true\nport = ssh\nlogpath = %(sshd_log)s\nmaxretry = 5" | sudo tee /etc/fail2ban/jail.local > /dev/null'
 
 # Restart and enable Fail2ban service
 echo "Starting and enabling Fail2ban service..."
@@ -586,7 +586,7 @@ echo "smtp_sasl_security_options = noanonymous" | sudo tee -a /etc/postfix/main.
 
 echo "Creating SASL password file..."
 sudo touch /etc/postfix/sasl_passwd
-echo "[smtp.gmail.com]:587 <balogsun@gmail.com>:hbstkssqemmjfqyi" | sudo tee -a /etc/postfix/sasl_passwd > /dev/null
+echo "[smtp.gmail.com]:587 <user@gmail.com>:gmailpass" | sudo tee -a /etc/postfix/sasl_passwd > /dev/null
 
 # Secure the SASL password file and update Postfix lookup table
 
@@ -608,7 +608,7 @@ sudo systemctl restart postfix
 # Test the Postfix configuration
 
 echo "Testing Postfix configuration by sending a test email..."
-echo "If you get this mail, it means the mail application is working" | mail -s "Postfix mail from <ServerA@seunb.com>" <balogsun@gmail.com>
+echo "If you get this mail, it means the mail application is working" | mail -s "Postfix mail from <ServerA@domain.com>" <user@gmail.com>
 
 # Print mail logs
 
@@ -1337,7 +1337,7 @@ nano install_aide_postfix.yml
           # Create sasl_passwd file for Postfix
           echo "Creating SASL password file..."
           touch /etc/postfix/sasl_passwd
-          echo "[smtp.gmail.com]:587 balogsun@gmail.com:hbstkssqemmjfqyi" | tee -a /etc/postfix/sasl_passwd > /dev/null
+          echo "[smtp.gmail.com]:587 user@gmail.com:gmailpass" | tee -a /etc/postfix/sasl_passwd > /dev/null
 
           # Secure the SASL password file and update Postfix lookup table
           echo "Securing SASL password file..."
@@ -1355,7 +1355,7 @@ nano install_aide_postfix.yml
 
           # Test the Postfix configuration
           echo "Testing Postfix configuration by sending a test email..."
-          echo "If you get this mail, it means the mail application is working" | mail -s "Postfix mail from ServerA@seunb.com" balogsun@gmail.com
+          echo "If you get this mail, it means the mail application is working" | mail -s "Postfix mail from ServerA@domain.com" user@gmail.com
 
           # Print mail logs
           echo "Printing mail logs..."
@@ -1363,7 +1363,7 @@ nano install_aide_postfix.yml
 
           # Set up a cron job for daily AIDE checks and email reports
           echo "Setting up daily AIDE checks cron job..."
-          (crontab -l 2>/dev/null; echo "0 2 * * * /usr/bin/aide -c /etc/aide/aide.conf --check | mail -s 'AIDE Daily Report' balogsun@gmail.com") | crontab -
+          (crontab -l 2>/dev/null; echo "0 2 * * * /usr/bin/aide -c /etc/aide/aide.conf --check | mail -s 'AIDE Daily Report' user@gmail.com") | crontab -
 
           echo "Setup complete. Check your email for the test message and AIDE reports."
       mode: '0755'
@@ -1686,7 +1686,7 @@ nano apache.yml
 
 - To implement a central logging solution using the ELK stack (Elasticsearch, Logstash, and Kibana) and create a dashboard or report to overview the security status of all servers, follow these detailed steps. This guide will cover setting up the ELK stack on a central logging server and configuring other servers to send their logs.
 
-### **1. Central Logging Server Setup (192.168.5.20)**
+### **1. Central Logging Server Setup**
 
 #### **1.1 Install Java Environment Packages**
 
@@ -1729,9 +1729,9 @@ cluster.name: my-application
 node.name: node-1
 path.data: /var/lib/elasticsearch
 path.logs: /var/log/elasticsearch
-network.host: 192.168.5.20
+network.host: <ipadress>
 http.port: 9200
-discovery.seed_hosts: ["192.168.5.20"]
+discovery.seed_hosts: ["<ipadress>"]
 cluster.initial_master_nodes: ["node-1"]
 xpack.security.enabled: false
 ```
@@ -1771,7 +1771,7 @@ input {
 
 output {
   elasticsearch {
-    hosts => ["http://192.168.5.20:9200"]
+    hosts => ["http://<ipadress>:9200"]
     index => "security-logs-%{+YYYY.MM.dd}"
   }
 }
@@ -1808,18 +1808,18 @@ sudo sed -i 's/#server.port: 5601/server.port: 5601/' /etc/kibana/kibana.yml
 #### Uncomment and modify `elasticsearch.hosts`
 
 ```
-sudo sed -i 's/#elasticsearch.hosts: \["http:\/\/localhost:9200"\]/elasticsearch.hosts: \["http:\/\/192.168.5.20:9200"\]/' /etc/kibana/kibana.yml
+sudo sed -i 's/#elasticsearch.hosts: \["http:\/\/localhost:9200"\]/elasticsearch.hosts: \["http:\/\/<ipadress>:9200"\]/' /etc/kibana/kibana.yml
 ```
 
 #### Uncomment and modify `server.host`
 
 ```
-sudo sed -i 's/#server.host: "localhost"/server.host: "192.168.5.20"/' /etc/kibana/kibana.yml
+sudo sed -i 's/#server.host: "localhost"/server.host: "<ipadress>"/' /etc/kibana/kibana.yml
 ```
 
 ```
 server.name: "ServerA"
-server.publicBaseUrl: "http://192.168.5.20:5601"
+server.publicBaseUrl: "http://<ipadress>:5601"
 ```
 
 #### Start and enable Kibana
@@ -1858,14 +1858,14 @@ Edit the Filebeat configuration file `/etc/filebeat/filebeat.yml` on each server
 
 ```  
 output.elasticsearch:
-  hosts: ["192.168.5.20:9200"]
-  username: "kibana_system"
-  password: "password"
+  hosts: ["<ipadress>:9200"]
+  username: "kibana_user"
+  password: "passw"
   
 setup.kibana:
-    host: "192.168.5.20:5601"
-    username: "kibana_system"  
-    password: "password"
+    host: "<ipadress>:5601"
+    username: "kibana_user"  
+    password: "passw"
 ```
 
 #### But if setting up filebeat to ship logs through logstash, Uncomment and modify the `output.logstash` section:**, `output.logstash` and `output.elasticsearch` cannot be enabled at same time.
@@ -1873,7 +1873,7 @@ setup.kibana:
 ```
 # output.logstash
 # The Logstash hosts
-  #hosts: ["192.168.5.20:5044"]
+  #hosts: ["<ipadress>:5044"]
 ```
 
 #### List the available modules:
@@ -1985,8 +1985,8 @@ sudo ufw enable
 - Test for connectivity amongst all filebeats host servers
 
 ```
-curl -X GET "192.168.5.20:9200/"
-curl -I <http://192.168.5.20:5601> [firewall]
+curl -X GET "<ipadress>:9200/"
+curl -I <http://<ipadress>:5601> [firewall]
 ```
 
 ### **Create Dashboards and Reports in Kibana** [Run this on central logging server only]
@@ -2004,7 +2004,7 @@ sudo filebeat setup -e
 
 #### **4.1 Access Kibana**
 
-- Open your web browser and navigate to `http://192.168.5.20:5601`.
+- Open your web browser and navigate to `http://<Ipadress>:5601`.
 
 - In the side navigation, click Discover. To see Filebeat data, make sure the predefined filebeat-* data view is selected.
 
