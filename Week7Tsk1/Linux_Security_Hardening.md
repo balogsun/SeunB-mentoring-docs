@@ -974,8 +974,6 @@ For example, to run the scan every day at midnight and generate an HTML report:
 0 0 * * * /usr/bin/inspec exec /path/to/linux-baseline --reporter html:/path/to/report-$(date +\%Y-\%m-\%d).html
 ```
 
-/usr/bin/inspec exec /root/linux-baseline --reporter html:/root/linux-baseline/report-$(date +\%Y-\%m-\%d).html
-
 This cron job will create a new report file each day, named with the current date.
 
 #### Steps to Apply and Check CIS Benchmarks Using OpenSCAP (Alternative to Inspec)
