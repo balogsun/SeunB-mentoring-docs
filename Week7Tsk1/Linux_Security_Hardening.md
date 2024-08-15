@@ -2,12 +2,12 @@
 
 ## **Introduction:**
 
-In today's fast-paced tech environment, launching a new product often requires setting up a secure and scalable web server cluster quickly and efficiently. As a Cloud or DevOps engineer at a growing startup, your role is critical in ensuring that these servers are not only operational but also secure against potential threats. This guide takes you through a real-world scenario of securing a new web server cluster from scratch, covering everything from initial server hardening to advanced automation and monitoring techniques. By the end, you'll have a robust, repeatable process for securing and managing web servers, ready to be scaled across your infrastructure.
+In today's fast-paced tech environment, launching a new product often requires setting up a secure and scalable infrastructure, quickly and efficiently. As a Cloud platform or DevOps engineer, your role is critical in ensuring that these servers are not only operational but also secure against potential threats. This guide takes you through a real-world scenario of securing new set of web servers from scratch, covering everything from initial server hardening to advanced automation and monitoring techniques. By the end, you'll gain knowledge of how to have a robust, repeatable process for securing and managing linux web servers, ready to be scaled across your infrastructure.
 
 Let's walk through creating a repeatable process that can be applied to multiple servers, ensuring they are all configured securely and consistently.
 I will be hardening the system, setting up file integrity monitoring, system audit, central logging solution and finally automating the process with ansible.
 
-Below is a bash script for basic system hardening of an Ubuntu server. It can definitely be applied to some other linux flavous as needed. The script covers various security measures to ensure the server is well-protected. After the script, I'll explain each stage in detail.
+Below is a bash script for basic system hardening of an Ubuntu server. It can definitely be applied to some other linux flavous as needed. The script covers some security measures to ensure the server is suitably protected. After the script, I'll explain each stage in detail.
 
 ### Bash Script: `nano system_hardening.sh`
 
