@@ -1674,7 +1674,9 @@ nano apache.yml
 
 <img width="520" alt="image" src="https://github.com/user-attachments/assets/3dc7ee30-8e77-4deb-9150-ac6cb5ad1a32">
 
+
 <img width="490" alt="image" src="https://github.com/user-attachments/assets/3f57a021-e45a-463a-b3c7-3e9ed569cd85">
+
 
 <img width="343" alt="image" src="https://github.com/user-attachments/assets/cee431bf-b5a7-4124-ac7a-c9412143d35d">
 
