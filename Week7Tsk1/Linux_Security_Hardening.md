@@ -652,15 +652,21 @@ echo "Setup complete. Check your email for the test message and AIDE reports."
      ```
 
 3. **Review the Lynis Report**
-   - Open and review the Lynis report, either from the saved log file:
+   - Open and review the Lynis report, from the saved log file:
 
      ```bash
-     sudo less /var/log/lynis-audit.log
+     sudo tail /var/log/lynis-audit.log
      ```
 
-   - Identify medium or high-risk findings. Lynis categorizes these findings by severity, so look for entries marked as "Medium" or "High."
+     ![Screenshot 2024-08-09 231213](https://github.com/user-attachments/assets/bf284bc0-d13f-4ec2-9106-df609fbd5518)
 
-Next, we will be reviewing the Lynis report, and address at least 5 medium or high-risk findings, and then document the changes made to fix the findings with justifications.
+     ![Screenshot 2024-08-09 231106](https://github.com/user-attachments/assets/ca6a427b-60e6-427a-b3fc-00c43f2f5f54)
+
+     ![Screenshot 2024-08-09 231129](https://github.com/user-attachments/assets/671169e6-1d50-4d73-8311-79731a16fed9)
+
+
+
+### Next, we will be reviewing the Lynis report, and address at least 5 medium or high-risk findings, and then document the changes made to fix the findings with justifications.
 
 ### 1. **Weak File Permissions on Critical Directories**
 
@@ -693,6 +699,8 @@ Next, we will be reviewing the Lynis report, and address at least 5 medium or hi
         - Ensure the permissions are set to `600` (i.e., `-rw-------`), meaning only the root user can read and write.
 
 - **Justification**: Restricting access to cron directories prevents unauthorized users from tampering with scheduled tasks, which is critical for maintaining system integrity.
+
+<img width="379" alt="Screenshot 2024-08-09 233208" src="https://github.com/user-attachments/assets/c6550271-1c60-4c5e-a246-f9727c43f117">
 
 ### 2. **Weak File Permissions on Sensitive Files**
 
@@ -751,7 +759,7 @@ Next, we will be reviewing the Lynis report, and address at least 5 medium or hi
         - Set the number of days before password expiration that the user is warned:
 
           ```bash
-          PASS_WARN_AGE 14
+          PASS_WARN_AGE 10
           ```
 
      3. **Apply the Changes**:
@@ -770,6 +778,10 @@ Next, we will be reviewing the Lynis report, and address at least 5 medium or hi
         - Ensure the correct password aging policies are applied.
 
 - **Justification**: Enforcing password aging helps ensure that passwords are updated regularly, reducing the risk of compromised accounts.
+
+![Screenshot 2024-08-09 233815](https://github.com/user-attachments/assets/c6dba8c7-1eca-4009-8823-07633742198f)
+
+<img width="469" alt="image" src="https://github.com/user-attachments/assets/a83dcc70-4d36-4526-aa82-539ae2d591b9">
 
 ### 4. **Lack of Sticky Bit on /tmp Directory**
 
@@ -800,7 +812,7 @@ Next, we will be reviewing the Lynis report, and address at least 5 medium or hi
 
 - **Justification**: Applying the sticky bit restricts file deletions in `/tmp` to the file's owner, thereby improving security and preventing unauthorized file manipulations.
 
----
+![Screenshot 2024-08-09 234033](https://github.com/user-attachments/assets/c39f1d74-48c4-45c6-a88d-98600a40aa72)
 
 ### 5. **Unrestricted NTP Service Access**
 
@@ -839,7 +851,7 @@ Next, we will be reviewing the Lynis report, and address at least 5 medium or hi
 
 These steps will help address the findings identified in the security audit, ensuring the system is better protected against various threats and vulnerabilities.
 
-### Understanding CIS Benchmarks
+## Understanding CIS Benchmarks
 
 **CIS (Center for Internet Security) Benchmarks** are consensus-based, best-practice security configuration guides. They are designed to help organizations secure their IT systems and data against cyber threats. These benchmarks are widely recognized as industry standards for hardening systems and improving their security posture.
 
@@ -858,6 +870,10 @@ This is the easiest method to install InSpec.
 ```bash
 curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
 ```
+
+![Screenshot 2024-08-12 110005](https://github.com/user-attachments/assets/f70310f7-4aab-40a1-9fa8-0a881032c55b)
+
+![Screenshot 2024-08-12 110139](https://github.com/user-attachments/assets/27e87272-7599-47d7-bab5-eb098ed7c5c0)
 
 #### B. **Install via APT Repository (Alternative Method)**
 
@@ -921,6 +937,9 @@ You can generate a report in various formats, such as JSON or HTML, for further 
   inspec exec . --reporter html:report.html
   ```
 
+ <img width="316" alt="image" src="https://github.com/user-attachments/assets/c9ef9c2b-72b5-41ef-b8c7-142c0eae9063">
+
+
 - **Generate a JSON Report:**
 
   ```bash
@@ -932,6 +951,11 @@ You can generate a report in various formats, such as JSON or HTML, for further 
 - If you generated an HTML report, you can ship out the report to your local machine and then open it in a web browser:
 
 - If you generated a JSON report, you can parse it or use it as input for other tools or automation processes.
+
+  ![Screenshot 2024-08-12 120733](https://github.com/user-attachments/assets/fd2c7695-c388-4501-b84a-44327328fa0f)
+
+  ![Screenshot 2024-08-12 120852](https://github.com/user-attachments/assets/99af79df-25b8-405a-8cff-1e5a0d3dc2be)
+
 
 ### 5. **(Optional) Schedule Regular Scans**
 
@@ -955,7 +979,7 @@ For example, to run the scan every day at midnight and generate an HTML report:
 
 This cron job will create a new report file each day, named with the current date.
 
-#### Steps to Apply and Check CIS Benchmarks Using OpenSCAP
+#### Steps to Apply and Check CIS Benchmarks Using OpenSCAP (Alternative to Inspec)
 
 1. **Install OpenSCAP**:
 sudo apt-get install openscap-scanner openscap-utils
@@ -1001,6 +1025,8 @@ You should now see the SSG security policies for various linux flavors, but we w
 oscap info /usr/share/xml/scap/ssg/content/ssg-ubuntu2204-xccdf.xml
 ```
 
+<img width="516" alt="image" src="https://github.com/user-attachments/assets/517b01e9-a43f-4d98-8d6b-0f9b48bd8c80">
+
 Lets work with `xccdf_org.ssgproject.content_profile_cis_level1_server` which is tailored for CIS benchmarks Level 1 server hardening.
 
 ### Run the evaluation scan that will output the report in html format
@@ -1011,18 +1037,14 @@ sudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_cis_level1_
 
 After the evaluation has completed, you will see a long list of rules and whether your system passed or failed those rules. Copy the `result.html` file to your local machine and open with web browser.
 
-### Conclusion
-
 By following these steps, you'll be able to use InSpec to run CIS benchmark checks against your Ubuntu system, generate reports, and even automate regular compliance checks.
 By integrating CIS Benchmarks and tools like OpenSCAP into your security practices, you can significantly enhance your system's security posture, ensure compliance with industry standards, and automate the process of securing your IT infrastructure.
 
-===========================
-
-## Next, let us put evrything we have previously done into automation. On your chosen primary server
+## Next, let us put evrything we have previously done into automation. On your chosen primary server.
 
 Here is a bash script containing the steps to install and configure Ansible on an Ubuntu system.
-I have 3 hosts and ansible will be configured with ssh keys to authenticate to the host servers.
-Run this script on only the primary host where you want ansible to be installed.
+I have 1 primary server and 2 other hosts, and ansible will be configured with ssh keys to authenticate to the host servers.
+Run this script on only the primary server where you want ansible to be installed.
 
 ```
 sudo nano install_ansible.sh
@@ -1045,13 +1067,13 @@ sudo mkdir /etc/ansible/
 sudo touch /etc/ansible/hosts
 sudo tee /etc/ansible/hosts > /dev/null <<EOL
 [ServerA]
-192.168.5.20
+192.168.x.x
 
 [ServerB]
-192.168.5.21
+192.168.x.x
 
 [ServerC]
-192.168.5.22
+192.168.x.x
 EOL
 
 # Edit the Ansible configuration file
@@ -1143,6 +1165,9 @@ done
 
 echo "SSH key setup complete."
 ```
+
+<img width="417" alt="image" src="https://github.com/user-attachments/assets/f2293700-7b6f-45ec-b700-e9a9866337e6">
+
 
 ### Below hardening yaml script includes both package installation and configuration, you may choose to separate installation and configuration commands into separate tasks, or separate yaml files  
 
@@ -1476,11 +1501,11 @@ nano secure_ubuntu.yml
    - Modify the `sensitive_files`, `unnecessary_services`, and `ntp_servers` lists according to your environment's requirements.
    - Define the `files_to_secure_delete` list with the paths of files you wish to securely delete.
 
-### Scaling and Monitoring
+## Scaling and Monitoring
 
 ### Let's set up an Ansible playbook to deploy secure web servers on 2 additional identical servers
 
-#### Playbook to Installs and configures my custom static web server
+#### Playbook to Installs and configures my custom (pizza booking) web server
 
 ```
 
@@ -1646,6 +1671,13 @@ nano apache.yml
    ```
 
 - You notice a failure on one of the servers, all I had to do was integrate the `apt-get update` command into the ansible script to make it successful.
+
+<img width="520" alt="image" src="https://github.com/user-attachments/assets/3dc7ee30-8e77-4deb-9150-ac6cb5ad1a32">
+
+<img width="490" alt="image" src="https://github.com/user-attachments/assets/3f57a021-e45a-463a-b3c7-3e9ed569cd85">
+
+<img width="343" alt="image" src="https://github.com/user-attachments/assets/cee431bf-b5a7-4124-ac7a-c9412143d35d">
+
 
 ### Monitoring with ELK stack
 
@@ -1977,39 +2009,17 @@ sudo filebeat setup -e
 
 - In the side navigation, click Dashboard, then select the dashboard that you want to open.
 
-1. **Navigate to Create Data view:**
-   - type **Name field** > **Index pattern field and **time stamp field**.
-   - Enter `security-logs` as name field.
-   - Enter `filebeat-*` as the index pattern.
+  **syslog dashboard**
+  ![Screenshot 2024-08-14 125932](https://github.com/user-attachments/assets/69b79df6-52b4-413a-97cf-8a795d502649)
 
-3. **Configure Time Filter:**
-   - Choose the field for the time filter (usually `@timestamp`).
-   - Click **Create index pattern**.
+  **ssh login dashboard**
+  ![Screenshot 2024-08-14 130933](https://github.com/user-attachments/assets/25293241-aa0c-4adb-bf9c-57f5091bbb62)
 
-### **3. Create Visualizations**
+  **sudo commands dashboard**
+  ![Screenshot 2024-08-14 131206](https://github.com/user-attachments/assets/34060b0a-c89c-458f-96b1-8b89ebc56636)
 
-1. **Go to Visualize Library:**
-   - Navigate to **Visualize Library**.
 
-2. **Create Visualization:**
-   - Click **Create visualization**.
-   - Choose a visualization type (e.g., bar chart, pie chart).
-   - Select the index pattern `filebeat-*`.
+ - Optionally, Configure your visualization to display the status data you are interested in (e.g., number of failed login attempts), 
+ select a pre-set dashboard and Add visualizations, Click **Save**.
 
-3. **Configure Visualization:**
-   - Configure your visualization to display the security status data you are interested in (e.g., number of failed login attempts, disk usage).
-
-### **4. Create a Dashboard**
-
-1. **Navigate to Dashboard:**
-   - Go to **Dashboard**.
-
-2. **Create New Dashboard:**
-   - Click **Create new dashboard**.
-   - Add the visualizations you created to the dashboard.
-   - Arrange them to provide an overview of the security status.
-
-### **5. Save and Share Dashboards**
-
-1. **Save Dashboard:**
-   - Click **Save** to save your dashboard.
+  In wrapping up, the journey of securing and automating cloud servers is a critical aspect of modern DevOps practices. Through meticulous server hardening, continuous monitoring, and strategic use of automation tools like Ansible, we've crafted a resilient and scalable infrastructure. This process not only fortifies your servers against vulnerabilities but also enhances efficiency and consistency across deployments. By adopting these best practices, your infrastructure would be positioned to maintain a secure, reliable, and scalable environment, enabling you to confidently support your company's growth and technological advancements.
