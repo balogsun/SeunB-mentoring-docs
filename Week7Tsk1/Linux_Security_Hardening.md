@@ -222,7 +222,7 @@ sudo cp /etc/fail2ban/jail.local /etc/fail2ban/jail.local.bak
 
 # Append new configuration settings to jail.local
 echo "Configuring Fail2ban..."
-sudo bash -c 'echo -e "[DEFAULT]\n# Whitelist your own IPs\nignoreip = 127.0.0.1/8 ::1 <ipadress>/24 <ipadress>/24\n\n# Ban time in seconds (e.g., 10 minutes)\nbantime = 600\n\n# Time frame for counting failures in seconds\nfindtime = 600\n\n# Max retry attempts before banning\nmaxretry = 5\n\n[sshd]\nenabled = true\nport = ssh\nlogpath = %(sshd_log)s\nmaxretry = 5" | sudo tee /etc/fail2ban/jail.local > /dev/null'
+sudo bash -c 'echo -e "[DEFAULT]\n# Whitelist your own IPs\nignoreip = 127.0.0.1/8 ::1 <ipaddress>/24 <ipaddress>/24\n\n# Ban time in seconds (e.g., 10 minutes)\nbantime = 600\n\n# Time frame for counting failures in seconds\nfindtime = 600\n\n# Max retry attempts before banning\nmaxretry = 5\n\n[sshd]\nenabled = true\nport = ssh\nlogpath = %(sshd_log)s\nmaxretry = 5" | sudo tee /etc/fail2ban/jail.local > /dev/null'
 
 # Restart and enable Fail2ban service
 echo "Starting and enabling Fail2ban service..."
@@ -1729,9 +1729,9 @@ cluster.name: my-application
 node.name: node-1
 path.data: /var/lib/elasticsearch
 path.logs: /var/log/elasticsearch
-network.host: <ipadress>
+network.host: <ipaddress>
 http.port: 9200
-discovery.seed_hosts: ["<ipadress>"]
+discovery.seed_hosts: ["<>"]
 cluster.initial_master_nodes: ["node-1"]
 xpack.security.enabled: false
 ```
@@ -1771,7 +1771,7 @@ input {
 
 output {
   elasticsearch {
-    hosts => ["http://<ipadress>:9200"]
+    hosts => ["http://<ipaddress>:9200"]
     index => "security-logs-%{+YYYY.MM.dd}"
   }
 }
@@ -1808,18 +1808,18 @@ sudo sed -i 's/#server.port: 5601/server.port: 5601/' /etc/kibana/kibana.yml
 #### Uncomment and modify `elasticsearch.hosts`
 
 ```
-sudo sed -i 's/#elasticsearch.hosts: \["http:\/\/localhost:9200"\]/elasticsearch.hosts: \["http:\/\/<ipadress>:9200"\]/' /etc/kibana/kibana.yml
+sudo sed -i 's/#elasticsearch.hosts: \["http:\/\/localhost:9200"\]/elasticsearch.hosts: \["http:\/\/<ipaddress>:9200"\]/' /etc/kibana/kibana.yml
 ```
 
 #### Uncomment and modify `server.host`
 
 ```
-sudo sed -i 's/#server.host: "localhost"/server.host: "<ipadress>"/' /etc/kibana/kibana.yml
+sudo sed -i 's/#server.host: "localhost"/server.host: "<ipaddress>"/' /etc/kibana/kibana.yml
 ```
 
 ```
 server.name: "ServerA"
-server.publicBaseUrl: "http://<ipadress>:5601"
+server.publicBaseUrl: "http://<ipaddress>:5601"
 ```
 
 #### Start and enable Kibana
@@ -1858,12 +1858,12 @@ Edit the Filebeat configuration file `/etc/filebeat/filebeat.yml` on each server
 
 ```  
 output.elasticsearch:
-  hosts: ["<ipadress>:9200"]
+  hosts: ["<ipaddress>:9200"]
   username: "kibana_user"
   password: "passw"
   
 setup.kibana:
-    host: "<ipadress>:5601"
+    host: "<ipaddress>:5601"
     username: "kibana_user"  
     password: "passw"
 ```
@@ -1873,7 +1873,7 @@ setup.kibana:
 ```
 # output.logstash
 # The Logstash hosts
-  #hosts: ["<ipadress>:5044"]
+  #hosts: ["<ipaddress>:5044"]
 ```
 
 #### List the available modules:
@@ -1985,8 +1985,8 @@ sudo ufw enable
 - Test for connectivity amongst all filebeats host servers
 
 ```
-curl -X GET "<ipadress>:9200/"
-curl -I <http://<ipadress>:5601> [firewall]
+curl -X GET "<ipaddress>:9200/"
+curl -I <http://<ipaddress>:5601> [firewall]
 ```
 
 ### **Create Dashboards and Reports in Kibana** [Run this on central logging server only]
@@ -2004,7 +2004,7 @@ sudo filebeat setup -e
 
 #### **4.1 Access Kibana**
 
-- Open your web browser and navigate to `http://<Ipadress>:5601`.
+- Open your web browser and navigate to `http://<ipaddress>:5601`.
 
 - In the side navigation, click Discover. To see Filebeat data, make sure the predefined filebeat-* data view is selected.
 
