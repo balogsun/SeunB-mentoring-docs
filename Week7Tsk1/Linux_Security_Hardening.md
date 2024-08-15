@@ -765,7 +765,7 @@ echo "Setup complete. Check your email for the test message and AIDE reports."
         - Apply these settings to all user accounts:
 
           ```bash
-          sudo chage --mindays 7 --maxdays 90 --warndays 14 ubuntu
+          sudo chage --mindays 7 --maxdays 90 --warndays 10 ubuntu
           ```
 
      4. **Verify the Settings**:
@@ -1022,7 +1022,8 @@ You should now see the SSG security policies for various linux flavors, but we w
 oscap info /usr/share/xml/scap/ssg/content/ssg-ubuntu2204-xccdf.xml
 ```
 
-<img width="516" alt="image" src="https://github.com/user-attachments/assets/517b01e9-a43f-4d98-8d6b-0f9b48bd8c80">
+<img width="525" alt="image" src="https://github.com/user-attachments/assets/4fcabd53-f0e8-4d7a-abda-2724c86e6578">
+
 
 Lets work with `xccdf_org.ssgproject.content_profile_cis_level1_server` which is tailored for CIS benchmarks Level 1 server hardening.
 
@@ -1109,7 +1110,7 @@ echo "Ansible installation and configuration complete!"
    ./install_ansible.sh
    ```
 
-### Then we run the ansbile script to configure ansible hosts and authentication keys
+### Then we run the ansible script to configure ansible hosts and authentication keys
 
 ```
 # !/bin/bash
@@ -1272,8 +1273,6 @@ echo "SSH key setup complete."
    ansible-playbook run_hardening_script.yml -vv
    ```
 
-   The `-K` option is used to prompt for the sudo password if required. However, since I have configured Ansible for passwordless sudo, this should not prompt for a password if set correctly.
-
 ### To create an Ansible playbook that will install and configure AIDE and Postfix
 
 ```
@@ -1369,10 +1368,10 @@ nano install_aide_postfix.yml
       command: /tmp/install_aide_postfix.sh
 ```
 
- **Save and run the Playbook**:
+ **Insert your Gmail credentials in the yml above, save and run the Playbook:**:
 
    ```bash
-   ansible-playbook install_aide_postfix.yml -K
+   ansible-playbook install_aide_postfix.yml
    ```
 
 ### Below is an Ansible playbook that will apply specific security configurations based on CIS Benchmarks
@@ -1685,7 +1684,7 @@ nano apache.yml
 
 ### **1. Central Logging Server Setup**
 
-#### **1.1 Install Java Environment Packages**
+#### **1.1 Java Environment Packages**
 
 Elasticsearch and logstash requires Java to run. Ensure its comes pre-installed once they are installed.
 Keep below commands and run it to check java version after ELK installation.
@@ -1733,11 +1732,6 @@ cluster.initial_master_nodes: ["node-1"]
 xpack.security.enabled: false
 ```
 
-# [Otional] You can Configure JVM heap memory or leave as it is for a dev environment
-
--Xms512m
--Xmx512m
-
 # Start and enable Elasticsearch
 
 ```
@@ -1746,7 +1740,7 @@ sudo systemctl enable elasticsearch
 
 ```
 
-#### Check elasticsearch logs
+#### Check Elasticsearch logs
 
 ```
 tail /var/log/elasticsearch/my-application.log
@@ -1827,7 +1821,7 @@ sudo systemctl enable kibana
 sudo systemctl status kibana
 ```
 
-#### **Configure UFW on Central Logging Server**
+#### **Configure firewall on Central Logging Server**
 
 ```bash
 # Allow necessary ports
@@ -1837,7 +1831,7 @@ sudo ufw allow 5044/tcp   # Logstash
 sudo ufw enable
 ```
 
-### Install and Configure Filebeat on All Servers that will feed logs to kibana**
+### **Install and Configure Filebeat on All Servers that will feed logs to kibana**
 
 ```bash
 # Install Filebeat
@@ -1865,7 +1859,7 @@ setup.kibana:
     password: "passw"
 ```
 
-#### But if setting up filebeat to ship logs through logstash, Uncomment and modify the `output.logstash` section:**, `output.logstash` and `output.elasticsearch` cannot be enabled at same time.
+#### But if setting up filebeat to ship logs through logstash, uncomment and modify the `output.logstash` section: but note that `output.logstash` and `output.elasticsearch` cannot be enabled at same time.
 
 ```
 # output.logstash
