@@ -296,7 +296,7 @@ Now this same server has an alternate IP, i attempted to make several failed att
 
 ## Next, Lets install and configure a basic web server `apache`
 
-To install and configure a web server on Ubuntu, you can use Apache or nginx. I have created a custom html document (a simple pizza booking website) for this purposea and here's a step-by-step guide to install and configure Apache: 
+To install and configure a web server on Ubuntu, you can use Apache or nginx. I have created a custom html document (a simple pizza booking website) for this purpose and here's a step-by-step guide to install and configure Apache: 
 
 ### Bash Script for Installing and Configuring Apache
 
@@ -514,7 +514,7 @@ echo "Apache installation and configuration completed. You can access your web s
 
 ### Accessing the Web Server
 
-Once the script completes, you can access the web server by navigating to `http://<your-server-ip>` in your web browser. You should see the simple HTML page you created.
+Once the script completes, you can access the web server by navigating to `http://<your-server-ip>` in your web browser. You should see the simple HTML page you created. Also ensure to set up SSL for Apache for secure communication between users and the application. Proper SSL/TLS configuration will encrypt data in transit, protect against man-in-the-middle attacks, and build trust with your users by validating your server’s identity. 
 
 ![Screenshot 2024-08-09 113842](https://github.com/user-attachments/assets/982eba30-81a7-4f71-8a12-d3c1572ec461)
 
