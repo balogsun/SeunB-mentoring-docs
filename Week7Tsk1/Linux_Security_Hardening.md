@@ -1,6 +1,6 @@
 # **Securing your Cloud Infrastructure: A comprehensive guide to hardening, scaling, automating and monitoring your servers**
 
-**Introduction:**
+## **Introduction:**
 
 In today's fast-paced tech environment, launching a new product often requires setting up a secure and scalable web server cluster quickly and efficiently. As a DevOps engineer at a growing startup, your role is critical in ensuring that these servers are not only operational but also secure against potential threats. This guide takes you through a real-world scenario of securing a new web server cluster from scratch, covering everything from initial server hardening to advanced automation and monitoring techniques. By the end, you'll have a robust, repeatable process for securing and managing web servers, ready to be scaled across your infrastructure.
 
@@ -147,6 +147,10 @@ chmod 764 system_hardening.sh
 ```
 ./chmod 764 system_hardening.sh
 ```
+Snippet of the script running
+
+![Screenshot 2024-08-09 100220](https://github.com/user-attachments/assets/0ceddca4-dd50-4845-acac-d59a352e5d4a)
+
 
 ### Summary of Hardening Steps
 
@@ -177,9 +181,16 @@ This script is designed to cover a wide range of basic security measures that ar
 
 - vagrant user is not a member of wheel and was not able to perform su functions, unlike the ubuntu user.
 
-- root user could no longer make a direct ssh login
+  ![Screenshot 2024-08-09 100426](https://github.com/user-attachments/assets/3ff910f6-31bf-4076-8830-dfadd04cc8e5)
+
 - vagrant user tried to change password that did not meet up with strong password policies and that attempt failed.
+
+  ![Screenshot 2024-08-09 100829](https://github.com/user-attachments/assets/025ef59d-faa5-4edd-8104-dd5206aa020a)
+
 - display banner is shown whenever a user logs in.
+  ![Screenshot 2024-08-09 105721](https://github.com/user-attachments/assets/f0404282-ee6b-40c2-9937-0cbf654ee78f)
+
+- root user could no longer make a direct ssh login
 
 ## Next we can install and setup `Fail2ban`
 
@@ -265,6 +276,8 @@ List Banned IPs
 sudo fail2ban-client status ssh
 ```
 
+<img width="373" alt="image" src="https://github.com/user-attachments/assets/97bf746d-0335-4a22-858a-009b7e2f91a4">
+
 This will show the number of currently banned IPs and the list of banned IPs.
 
 If you need to unban an IP address manually:
@@ -277,11 +290,14 @@ sudo fail2ban-client set sshd unbanip <IP_ADDRESS>
 
 This script automates the entire process of installing and configuring Fail2ban, making it easy to secure your server against brute-force attacks.
 
-Now this same server has an alternate IP, i attempted to make several failed attempts to it and here are the logs showing the IP being banned. and future connections from that IP were no longer permitted.
+Now this same server has an alternate IP, i attempted to make several failed attempts to it and here are the logs showing the IP being banned, and future connections from that IP were no longer permitted.
+
+<img width="609" alt="image" src="https://github.com/user-attachments/assets/bdcac231-8d1a-409f-a17b-1b373e8eec1f">
+
 
 ## Next, Lets install and configure a basic web server `apache`
 
-To install and configure a simple web server on Ubuntu, you can use Apache, which is a popular and easy-to-set-up web server. Here's a step-by-step guide to install and configure Apache:
+To install and configure a web server on Ubuntu, you can use Apache or nginx. I have created a custom html document (a simple pizza booking website) for this purposea and here's a step-by-step guide to install and configure Apache: 
 
 ### Bash Script for Installing and Configuring Apache
 
@@ -483,32 +499,26 @@ echo "Apache installation and configuration completed. You can access your web s
 
 ```
 
-### Explanation:
-
- **Install Apache**: Installs the Apache web server.
- **Start and Enable Apache**: Starts the Apache service and ensures it starts on boot.
- **Configure Firewall**: Allows HTTP and HTTPS traffic through the firewall.
- **Create a Simple HTML File**: Adds a basic HTML page to the default web directory.
- **Restart Apache**: Restarts Apache to apply any configuration changes.
- **Check Apache Status**: Displays the status of the Apache service to verify it’s running.
-
-### How to Use the Script:
-
-1. **Save the Script**: Save the script as `install_configure_apache.sh`.
-2. **Make it Executable**:
+ **Save the Script**: Save the script as `install_configure_apache.sh`.
+ **Make it Executable**:
    ```bash
    chmod +x apache.sh
    ```
 
-3. **Run the Script**:
+ **Run the Script**:
 
    ```bash
    sudo ./apache.sh
    ```
+**A snippet of the script when run**
+![Screenshot 2024-08-09 113613](https://github.com/user-attachments/assets/509e8834-6c3b-473e-86d8-914d846080cc)
 
 ### Accessing the Web Server
 
 Once the script completes, you can access the web server by navigating to `http://<your-server-ip>` in your web browser. You should see the simple HTML page you created.
+
+![Screenshot 2024-08-09 113842](https://github.com/user-attachments/assets/982eba30-81a7-4f71-8a12-d3c1572ec461)
+
 
 ### Next lets setup File Integrity Monitoring with AIDE (Advanced Intrusion Detection Environment),  to help you monitor file integrity effectively and receive daily reports
 
@@ -608,11 +618,16 @@ tail /var/log/mail.log
 # Set up a cron job for daily AIDE checks and email reports
 
 echo "Setting up daily AIDE checks cron job..."
-(crontab -l 2>/dev/null; echo "0 2 ** * /usr/bin/aide -c /etc/aide/aide.conf --check | mail -s 'AIDE Daily Report' <balogsun@gmail.com>") | crontab -
+(crontab -l 2>/dev/null; echo "0 2 ** * /usr/bin/aide -c /etc/aide/aide.conf --check | mail -s 'AIDE Daily Report' <user@gmail.com>") | crontab -
 
 echo "Setup complete. Check your email for the test message and AIDE reports."
 
 ```
+
+#### Screenshot showing Email sent successfully from the analysis of `AIDE Daily Report`
+
+<img width="564" alt="image" src="https://github.com/user-attachments/assets/a4458d67-7088-45cf-a979-c3a44d7e47ec">
+
 
 ### Steps for Conducting a Security Audit with Lynis
 
