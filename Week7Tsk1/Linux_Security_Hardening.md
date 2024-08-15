@@ -1672,12 +1672,13 @@ nano apache.yml
 
 - You notice a failure on one of the servers, all I had to do was integrate the `apt-get update` command into the ansible script to make it successful.
 
+- 1
 <img width="520" alt="image" src="https://github.com/user-attachments/assets/3dc7ee30-8e77-4deb-9150-ac6cb5ad1a32">
 
-
+- 2
 <img width="490" alt="image" src="https://github.com/user-attachments/assets/3f57a021-e45a-463a-b3c7-3e9ed569cd85">
 
-
+- 2
 <img width="343" alt="image" src="https://github.com/user-attachments/assets/cee431bf-b5a7-4124-ac7a-c9412143d35d">
 
 
