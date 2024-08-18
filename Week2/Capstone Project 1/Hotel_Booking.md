@@ -458,6 +458,7 @@ jobs:
 
 <img width="782" alt="Screenshot 2024-06-20 192041" src="https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/b922e957-a6f3-4c28-9008-ce0261022a0b">
 
+ - Another place i can make a change to is at location repo /hotel-booking/src/routes/home/Home.jsx
 
 ### The Artifact for the Trivy scan results was generated in the repository download URL at: [Scan Results](<https://github.com/balogsun/hotel-booking/actions/runs/9589669410/artifacts/1618838601>)
 
