@@ -139,15 +139,23 @@ To set up and configure CircleCI for continuous integration, follow these detail
 ## **2. CircleBot, will prepare a custom starter config file to build and test your code.**
 
 2. **CircleCI Configuration**
-   - A `.circleci/config.yml` file will be created automatically. Review it and click `submit and run`. You may not want to run the one that is suggested for you, you may simply select to run a `simlpe hello world` option, to proceed, then go to the github repo and change it to a working config that will build and store your codes as images in the github repository.
+   - A `.circleci/config.yml` file will be created automatically if it doesnt already exist. Review it and click `submit and run`. You may not want to run the one that is suggested for you, you may simply select to run a `simlpe hello world` option, to proceed, then go to your github repo and change it to a working config below that will build and store your codes as images in your docker hub container repository.
 
 ## **4. Configure Project Settings**
+ - By default. a trigger is already created for you, you can check if it exists or you create one.
+
+   <img width="749" alt="image" src="https://github.com/user-attachments/assets/57056a0f-0d2d-439b-a083-7a8507716ecf">
+
+   <img width="745" alt="image" src="https://github.com/user-attachments/assets/360f3943-f4fb-445a-977b-4357c1eabd22">
 
 ### **Environment Variables**
 
+- To prevent authentication errors to your docker hub environment, you need to set it in your environmental variables.
 - In the CircleCI dashboard, go to **Project Settings** > **Environment Variables**.
 - Add any necessary environment variables (e.g., `DOCKER_USER`, `DOCKER_PASS` for Docker authentication).
 - Put in you credentials for your dockerhub account user here.
+
+  <img width="766" alt="image" src="https://github.com/user-attachments/assets/39b5e438-4c02-4454-9a46-7404d7d0eb92">
 
 ### **I have written below a Config File that will securely integrate the hotel booking application for circleCI**
 
@@ -230,13 +238,13 @@ To set up and configure CircleCI for continuous integration, follow these detail
 
 ## **5. Trigger a Build**
 
-- Push a commit to your repository to trigger the first build.
+- Push a commit to your github repository to trigger the first build. You can make any small modification to the config.yml file and commit it to initiate a trigger. This step will be mentioned again when we deploy argoCD.
 - Monitor the build process in the CircleCI dashboard under the **Pipelines** section.
 
 ## **6. Monitor and Manage**
 
-- Use the CircleCI dashboard to view build logs, test results, and deployment status.
-- Failed builds are automatically sent to your email, sometime in junk/spam folder, you may add it to safe sender list.
+- Use the CircleCI `dashboard` --> Click on `Pipelines` to view build logs, test results, and deployment status.
+- Failed builds are automatically sent to your email used to register a CircleCI account, sometime in junk/spam folder, you may add it to safe sender list.
 
   <img width="709" alt="image" src="https://github.com/user-attachments/assets/9450570e-3290-4fc5-b829-0c2c21a129af">
 
@@ -244,7 +252,7 @@ To set up and configure CircleCI for continuous integration, follow these detail
 
 By following these steps, you can set up CircleCI to automate your project's build and test processes, integrating seamlessly with your existing GitHub or Bitbucket repositories.
 
-### **Install ArgoCD**
+## **Lets now Install ArgoCD**
 
 2. Create the namespace and install ArgoCD:
 
