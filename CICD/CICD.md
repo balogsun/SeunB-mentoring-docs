@@ -1,4 +1,4 @@
-# **Setting Up a Cost-Effective CI/CD and Kubernetes Environment: A Comprehensive Guide**
+# **Setting Up a Cost-Effective Kubernetes and CI/CD Environment: A Comprehensive Guide**
 
 If you want to optimize costs in setting up and managing Kubernetes in a cloud environment with integrated CI/CD workflows, this guide provides practical strategies to help you achieve that.
 
