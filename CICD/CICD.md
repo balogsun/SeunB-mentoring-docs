@@ -4,11 +4,11 @@ If you want to optimize costs in setting up and managing Kubernetes in a cloud e
 
 It offers a detailed approach to installing and configuring essential tools for setting up Kubernetes and integrating it with CI/CD on a Windows/Desktop environment. You'll find step-by-step instructions for setting up Chocolatey, Docker, Git, Minikube, kubectl, CircleCI, and ArgoCD. By following these steps, you’ll establish a robust development workflow that leverages these tools effectively while minimizing cloud costs
 
-**Prerequisites: Create accounts for below websites if you dont already have one.**
+**Prerequisites: Create accounts on the following websites if you don’t already have them:**
 
-- GitHub or GitLab account
-- Docker Hub account
-- CircleCI account
+- GitHub or GitLab
+- Docker Hub
+- CircleCI
 
 ## **Install Chocolatey for Windows**
 
