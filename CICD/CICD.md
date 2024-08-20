@@ -108,8 +108,7 @@ You may visit [Minikube's start guide](https://minikube.sigs.k8s.io/docs/start/)
    kubectl version --client
    ```
 
-### **Open the GitHub URL [https://github.com/balogsun/hotel-booking.git](https://github.com/balogsun/hotel-booking.git) and fork the repository.
-**
+### **Open the GitHub URL [Hotel-Booking](https://github.com/balogsun/hotel-booking.git) and fork the repository.**
 
 - Follow the instructions to complete cloning the repository to your own github account so that you can work with the copy you have created.
 
