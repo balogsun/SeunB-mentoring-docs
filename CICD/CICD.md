@@ -252,18 +252,18 @@ By following these steps, you can set up CircleCI to automate your project's bui
    ```bash
    kubectl create namespace argocd
    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+   ```
+   ```
    kubectl -n argocd get all
    kubectl get svc -n argocd
    ```
 
 3. Download and install Argo CD CLI:
     - Visit [ArgoCD releases](https://github.com/argoproj/argo-cd/releases/tag/v2.12.1) for the latest version. Explore the github repo for newer relaease if neccessary.
-    - Run ArgoCD CLI commands from the Windows command prompt, Open windows cmd as administrator, change directory to location where you downloaded the argocd exe file. Do not double click on the file and try to run directly from windows, it may be flagged.
+    - Run ArgoCD CLI commands from the Windows command prompt, Open windows cmd as administrator, change directory to location where you downloaded the argocd exe file. Do not double click on the exe file and try to run directly from windows, it may be flagged.
 
       ```bash
-      argocd login $ARGOCD_SERVER --username admin --password $ARGO_PWD --insecure
-      OR
-      argocd login $ARGOCD_SERVER --username admin --password $ARGO_PWD --secure
+      argocd login $ARGOCD_SERVER --username admin --password $ARGO_PWD --<insecure/secure>
 
       #Sample command below:
       argocd-windows-amd64.exe login <IpAddress>:portNo> --username admin --password xxxxxx –-insecure
@@ -273,7 +273,7 @@ By following these steps, you can set up CircleCI to automate your project's bui
       <img width="667" alt="image" src="https://github.com/user-attachments/assets/ebf6741b-a4f0-4bad-84ba-4217fd3becbe">
 
 
-    - Agrocd-server service is using “ClusterIP”. We can change it to NodePort” to access the agrocd UI from browser.
+    - Agrocd-server service is using “ClusterIP”. We can change it to NodePort” to access the agrocd UI from your local browser.
 
 4. Change ArgoCD server service type to NodePort:
 
@@ -305,7 +305,7 @@ By following these steps, you can set up CircleCI to automate your project's bui
    Visit `http://ControlPlaneNodeIP:ArgocdServicePort`.
 
 8. Retrieve the initial admin password:
- After reaching the UI the first time you can login with username: admin and the random password generated during the installation. You can find the password by running:
+ After reaching the UI for the first time, you can login with username: admin and the random password generated during the installation. You can find the password by running:
 
    ```bash
    kubectl get secret -n argocd
@@ -313,14 +313,21 @@ By following these steps, you can set up CircleCI to automate your project's bui
    kubectl get secret -n argocd argocd-initial-admin-secret -o yaml
    ```
 
-   ![Screenshot 2024-08-18 174936](https://github.com/user-attachments/assets/cf07a7b6-1b1e-4a53-bfaf-81b25afda357)
+   <img width="277" alt="image" src="https://github.com/user-attachments/assets/cdbc322e-178b-422f-b352-9950086e939d">
+
 
  The password is still encryped so you have to decrypt it.
 
  Windows may not support native base64 decoding, you can use an online website at <https://www.base64decode.org/>, insert the values and decode it.
 
+ <img width="364" alt="image" src="https://github.com/user-attachments/assets/36f215d0-0b50-4201-9f3c-b748d83c2e48">
+
+ <img width="628" alt="image" src="https://github.com/user-attachments/assets/83b5d485-ace9-434a-a51d-629608ea898b">
+
 - We can use this password to login. After login it is recommended to change the password.
 - Update password in the GUI, User Info Section --> update password --> Save
+
+  <img width="517" alt="image" src="https://github.com/user-attachments/assets/f241b221-97f4-4e20-a7f9-f7da69acac4b">
 
 9. You should delete the initial secret afterwards:
 
@@ -331,35 +338,67 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
 - In the ArgoCD web interface, click on **Settings** -> **Repositories**.
 
-- On the next page, click on **Connect Repo** and fill in the necessary details.
+  <img width="727" alt="image" src="https://github.com/user-attachments/assets/0efd2753-711f-4b22-8a1f-7b7ffe178e73">
 
-- Under “Repository URL,” provide the GitHub link where your copied code exists. Repo: `https://github.com/<githubuser>/hotel-booking.git`.
 
-- Fill out just these three places and leave the rest of the options. Head up and click on **Connect**.
+- On the next page, click on **Connect Repo** 
 
-### **Now we have connected our GitHub repository with ArgoCD. Let's go build our application.**
+- Fill out as below. Scroll up and click on **Connect**.
+
+  <img width="638" alt="image" src="https://github.com/user-attachments/assets/de12d52d-e1ca-4f78-a408-8c348247ffcf">
+
+
+### **Now we have connected our GitHub repository with ArgoCD. Next is to create an application.**
 
 - Click on the **Applications** page and click on **Create New App**.
 
-- Fill in the details as above.
+  <img width="450" alt="image" src="https://github.com/user-attachments/assets/45052278-ab51-4bcc-bc22-2e3e8f3c750a">
 
-- Fill in the source details. The deployment YAML for me was inside the `K8S` path; we need to put that as our path.
+- Fill in the details as below.
+
+  <img width="607" alt="image" src="https://github.com/user-attachments/assets/5d17d85e-cc29-47cc-b07c-85816e52475b">
+
+- Scroll down the page and fill in the `source` and `destination` details. The deployment YAML for our case repo is inside the `K8S` path; we need to put that as our path.
 
 - Select the cluster URL and namespace. Now click on **Create**. It will create the app.
 
-- We can see our app deployed in our cluster server.
+  <img width="724" alt="image" src="https://github.com/user-attachments/assets/f3f85dec-a678-412e-8bc2-386a3ec11b59">
 
-- We can access the app using the NodeIP URL.
+<img width="763" alt="image" src="https://github.com/user-attachments/assets/6745db79-124c-4011-a486-da3162c3f9c2">
 
-- Now we can update the booking app with CircleCI to create a new image and push it to Docker Hub. Update that image details in your `K8S/deployment.yml` file in your repo and click on **Sync** in the app.
+- Upon completion of the creation, argoCD will attempt to automatically deploy the hotel app using the `K8S` path that we have defined, this is where the `deployment.yml file` was placed. Upon successfuly deployment, We will find the hotle app deployed in our cluster server.
 
-  <img width="513" alt="Screenshot 2024-08-18 233712" src="https://github.com/user-attachments/assets/ae36562e-77a4-4c87-8027-79510e86289c">
+  ```
+  kubectl get all
+  ```
+  <img width="572" alt="Screenshot 2024-08-18 202348" src="https://github.com/user-attachments/assets/26231819-5434-4f7f-84f8-8a9e756da34d">
 
-  ![Screenshot 2024-08-18 210605](https://github.com/user-attachments/assets/06e27a90-24b0-40ba-8483-d844c8e884c6)
+
+- We can access the hotel app using the minikube controlplane NodeIP and hotel service port no.
+
+```
+kubectl get nodes -o wide
+```
+![Screenshot 2024-08-18 172735](https://github.com/user-attachments/assets/59374775-5e40-45aa-ac80-73476b370283)
+
+From the scheks above, url will be `http://172.27.217.12:30537`
+
+- Now we can make a change/update to the booking app by modifying a content of the source codes, here i have modified some details in the `src\routes\home\home.jsx` path. Once the file is saved and comitted, CircleCI previously configured will automatically detects this change and runs the workflow in .CircleCI/config.yml, to scan and build a new image, then push it to Docker Hub repository, awaiting deployment by argoCD.
+
+  <img width="506" alt="image" src="https://github.com/user-attachments/assets/01cbede9-0d4f-48b0-a83b-a544502e783a">
+  
+- Update that image details in your `K8S/deployment.yml` file in your repo and click on **Sync** in the argoCD app. This means that if CircleCI builds an image with a tag of v2, then you have to update the image tag in `K8S/deployment.yml` to v2 also.
+
+The hotel-deployment in you cluster will be automatically updated with the new modification you have made.
+
+![Screenshot 2024-08-18 202245](https://github.com/user-attachments/assets/3d776d8a-ead4-43c6-91f5-ef6d3244c30a)
+
+<img width="513" alt="Screenshot 2024-08-18 233712" src="https://github.com/user-attachments/assets/1a9c3aad-c343-4e4d-9e35-beed5a9a3eca">
+
+<img width="695" alt="image" src="https://github.com/user-attachments/assets/2462aa94-285a-43f2-b75a-b165647dfead">
 
 
-
-- When you click on **Sync**, you have some options tick boxes to select from. If using Argo CD for the first time in a development environment, here are some basic options you might consider selecting:
+- When you click on **Sync** with argoCD, you have some options tick boxes to select from. If using Argo CD for the first time in a development environment, here are some basic options you might consider selecting:
 
 <img width="344" alt="image" src="https://github.com/user-attachments/assets/64a9f530-a153-4b8c-b160-7fbfc5b55dfc">
 
