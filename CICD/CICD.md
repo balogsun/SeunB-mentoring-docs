@@ -77,17 +77,19 @@ You may visit [Minikube's start guide](https://minikube.sigs.k8s.io/docs/start/)
    ```powershell
    docker context ls
    docker context use desktop-linux
+   minikube start --driver=docker --docker-env="desktop-linux"
+   OR
    minikube start --driver=hyperv --docker-env="desktop-linux"
    ```
 
    Additional Minikube commands:
 
    ```bash
-   minikube version
-   minikube pause
-   minikube unpause
-   minikube stop
-   minikube delete
+   minikube version # Display minikube version
+   minikube pause # Tthis will not free up resources or stop the cluster, it will only make the service and cluster unavailable or unreachable
+   minikube unpause # Resume cluster services
+   minikube stop # Shuts down the virtual machine
+   minikube delete # Destroys and clean up the VM data from disk.
    ```
 
    For more information, visit [Minikube's documentation](https://minikube.sigs.k8s.io/docs/start/) where you can find basic sample deployments you can try your hands on.
@@ -106,7 +108,8 @@ You may visit [Minikube's start guide](https://minikube.sigs.k8s.io/docs/start/)
    kubectl version --client
    ```
 
-### **Open the github url (<https://github.com/balogsun/hotel-booking.git>) and fork the Repository**
+### **Open the GitHub URL [https://github.com/balogsun/hotel-booking.git](https://github.com/balogsun/hotel-booking.git) and fork the repository.
+**
 
 - Follow the instructions to complete cloning the repository to your own github account so that you can work with the copy you have created.
 
