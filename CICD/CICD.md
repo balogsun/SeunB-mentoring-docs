@@ -391,9 +391,12 @@ From the scheks above, url will be `http://172.27.217.12:30537`
 
 The hotel-deployment in you cluster will be automatically updated with the new modification you have made.
 
-![Screenshot 2024-08-18 202245](https://github.com/user-attachments/assets/3d776d8a-ead4-43c6-91f5-ef6d3244c30a)
+   ![Screenshot 2024-08-18 202245](https://github.com/user-attachments/assets/3d776d8a-ead4-43c6-91f5-ef6d3244c30a)
 
-<img width="513" alt="Screenshot 2024-08-18 233712" src="https://github.com/user-attachments/assets/1a9c3aad-c343-4e4d-9e35-beed5a9a3eca">
+- 
+   <img width="513" alt="Screenshot 2024-08-18 233712" src="https://github.com/user-attachments/assets/1a9c3aad-c343-4e4d-9e35-beed5a9a3eca">
+
+-
 
 <img width="695" alt="image" src="https://github.com/user-attachments/assets/2462aa94-285a-43f2-b75a-b165647dfead">
 
