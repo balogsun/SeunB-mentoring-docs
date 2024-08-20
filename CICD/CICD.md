@@ -152,7 +152,7 @@ To set up and configure CircleCI for continuous integration, follow these detail
 ### **I have written below a Config File that will securely integrate the hotel booking application for circleCI**
 
    **Note**, I have deliberately instructed the security tools to bypass any vulnerabilty just for demo purposes only.
-   The workflow will fail with an `exit code` if there are any vulnerbilities found in the code or docker images built. For production purpose, remove the string `|| true` in the config file.
+   The workflow will fail with an `exit code` if there are any vulnerabilities found in the code or docker images built. For production purpose, remove the string `|| true` in the config file.
 
     ```yaml
     version: 2.1
