@@ -1,8 +1,8 @@
 # **Setting Up a Cost-Effective CI/CD and Kubernetes Environment on Windows: A Comprehensive Guide**
 
-If you’ve ever worried about the costs associated with setting up your own continuous integration and deployment (CI/CD) workflow, especially while trying to minimize cloud expenses, this guide is for you.
+If you're looking to optimize costs while setting up and managing a Kubernetes cloud environment with an integrated continuous integration and deployment (CI/CD) workflow, this guide is designed to provide you with practical strategies to achieve this.
 
-This guide provides a detailed approach to installing and configuring key tools needed for CI/CD on a Windows environment. It includes step-by-step instructions for setting up Chocolatey, Docker, Git, Minikube, kubectl, CircleCI, and ArgoCD. By following these steps, you'll create a robust development workflow that leverages these tools effectively while keeping costs low.
+I will provide a detailed approach to installing and configuring key tools needed for CI/CD on a Windows environment, including step-by-step instructions for setting up Chocolatey, Docker, Git, Minikube, kubectl, CircleCI, and ArgoCD. By following these steps, you'll create a robust development workflow that leverages these tools effectively while keeping costs low.
 
 **Prerequisites:**
 
@@ -105,21 +105,11 @@ You may visit [Minikube's start guide](https://minikube.sigs.k8s.io/docs/start/)
    kubectl version --client
    ```
 
-### **Clone the Repository**
+### **Open the github url (https://github.com/balogsun/hotel-booking.git) and fork the Repository**
 
-1. Open Windows Command Prompt (search for CMD, right-click, and run as Administrator).
-2. Change directory to a path away from the Windows installation path:
+- Follow the instructions to complete cloning the repository to your own github account so that you can work with the copy you have created.
 
-   ```bash
-   cd C:\Users\username\Desktop
-   ```
-
-3. Clone the repository:
-
-   ```bash
-   git clone https://github.com/balogsun/hotel-booking.git
-   cd hotel-booking
-   ```
+  <img width="706" alt="Screenshot 2024-08-19 205107" src="https://github.com/user-attachments/assets/6b80385a-038c-4f70-9ce8-f726db047693">
 
 ### **Set Up CircleCI**
 
@@ -134,9 +124,15 @@ To set up and configure CircleCI for continuous integration, follow these detail
 - In the CircleCI dashboard, select **Projects** from the sidebar.
 - Click **Create Project** and choose the repository you want to connect.
 - What would you like to do, select `Build, test, and deploy a software application`
+
+  ![Screenshot 2024-08-18 183452](https://github.com/user-attachments/assets/79054276-b0f1-4009-9b84-27580dc1bc39)
+
 - Give your project a name.
 - Next, setup pipeline
 - Name your pipeline
+
+  ![Screenshot 2024-08-18 184640](https://github.com/user-attachments/assets/5b6122c7-d1f1-4997-9c8c-ee935bfd95ae)
+
 - Choose a repo, select either github, gitlab or gitbucket as repo source.
 - Authorize CircleCI to access your GitHub or Bitbucket account.
 
@@ -230,13 +226,7 @@ To set up and configure CircleCI for continuous integration, follow these detail
 
 ## **3. Commit and Push Changes**
 
-- Commit the `.circleci/config.yml` file to your repository:
-
-  ```bash
-  git add .circleci/config.yml
-  git commit -m "Add CircleCI configuration"
-  git push
-  ```
+- Commit the `.circleci/config.yml` file to your repository: This step is taken when you save the config file.
 
 ## **5. Trigger a Build**
 
@@ -248,17 +238,14 @@ To set up and configure CircleCI for continuous integration, follow these detail
 - Use the CircleCI dashboard to view build logs, test results, and deployment status.
 - Failed builds are automatically sent to your email, sometime in junk/spam folder, you may add it to safe sender list.
 
+  <img width="709" alt="image" src="https://github.com/user-attachments/assets/9450570e-3290-4fc5-b829-0c2c21a129af">
+
+  <img width="707" alt="image" src="https://github.com/user-attachments/assets/a706036e-d8fe-4120-ad3a-07d2d520c4c5">
+
+
 By following these steps, you can set up CircleCI to automate your project's build and test processes, integrating seamlessly with your existing GitHub or Bitbucket repositories.
 
-### **Install ArgoCD in EKS Cluster**
-
-1. Clone the repository and navigate to the directory:
-
-   ```bash
-   cd C:\Users\username\Desktop
-   git clone https://github.com/balogsun/hotel-booking.git
-   cd hotel-booking
-   ```
+### **Install ArgoCD**
 
 2. Create the namespace and install ArgoCD:
 
@@ -283,6 +270,9 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
       ```
 
+      <img width="667" alt="image" src="https://github.com/user-attachments/assets/ebf6741b-a4f0-4bad-84ba-4217fd3becbe">
+
+
     - Agrocd-server service is using “ClusterIP”. We can change it to NodePort” to access the agrocd UI from browser.
 
 4. Change ArgoCD server service type to NodePort:
@@ -295,18 +285,26 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
    A notepad will be automatically opened, scroll down and change from `ClusterIP` to `NodePort`. Now `service` will be changed to “NodePort”
 
-5. Note the Control Plane Node IP and ArgoCD service port that will be used to access the argoCD URL:
+   ![Screenshot 2024-08-18 172507](https://github.com/user-attachments/assets/a7b8655d-00a2-4983-a69b-8d8b026cd72f)
+
+
+6. Note the Control Plane Node IP and ArgoCD service port that will be used to access the argoCD URL:
 
    ```bash
    kubectl get node -o wide
    kubectl get svc -n argocd
    ```
 
-6. Access ArgoCD UI:
+   <img width="709" alt="image" src="https://github.com/user-attachments/assets/1b16b491-f457-4a7a-8026-4f2e98a74700">
+
+   ![Screenshot 2024-08-18 173906](https://github.com/user-attachments/assets/9857bb18-067c-44b2-a007-81761fe031a4)
+
+
+7. Access ArgoCD UI:
 
    Visit `http://ControlPlaneNodeIP:ArgocdServicePort`.
 
-7. Retrieve the initial admin password:
+8. Retrieve the initial admin password:
  After reaching the UI the first time you can login with username: admin and the random password generated during the installation. You can find the password by running:
 
    ```bash
@@ -314,6 +312,8 @@ By following these steps, you can set up CircleCI to automate your project's bui
    kubectl describe secret argocd-initial-admin-secret -n argocd
    kubectl get secret -n argocd argocd-initial-admin-secret -o yaml
    ```
+
+   ![Screenshot 2024-08-18 174936](https://github.com/user-attachments/assets/cf07a7b6-1b1e-4a53-bfaf-81b25afda357)
 
  The password is still encryped so you have to decrypt it.
 
@@ -333,7 +333,7 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
 - On the next page, click on **Connect Repo** and fill in the necessary details.
 
-- Under “Repository URL,” provide the GitHub link where our code exists. Repo: `https://github.com/balogsun/hotel-booking.git`.
+- Under “Repository URL,” provide the GitHub link where your copied code exists. Repo: `https://github.com/<githubuser>/hotel-booking.git`.
 
 - Fill out just these three places and leave the rest of the options. Head up and click on **Connect**.
 
@@ -351,9 +351,20 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
 - We can access the app using the NodeIP URL.
 
-- Now we can update our app with our CI tool to create a new image and push it to Docker Hub. Update that image details in your `K8S/deployment.yml` file in your repo and click on **Sync** in the app.
+- Now we can update the booking app with CircleCI to create a new image and push it to Docker Hub. Update that image details in your `K8S/deployment.yml` file in your repo and click on **Sync** in the app.
+
+  <img width="513" alt="Screenshot 2024-08-18 233712" src="https://github.com/user-attachments/assets/ae36562e-77a4-4c87-8027-79510e86289c">
+
+  ![Screenshot 2024-08-18 210605](https://github.com/user-attachments/assets/06e27a90-24b0-40ba-8483-d844c8e884c6)
+
+
 
 - When you click on **Sync**, you have some options tick boxes to select from. If using Argo CD for the first time in a development environment, here are some basic options you might consider selecting:
+
+<img width="344" alt="image" src="https://github.com/user-attachments/assets/64a9f530-a153-4b8c-b160-7fbfc5b55dfc">
+
+<img width="652" alt="image" src="https://github.com/user-attachments/assets/928a49bd-ac0f-4f51-82a6-d057d7bac4e5">
+
 
 ### **Options**
 
@@ -382,8 +393,6 @@ These options provide a balance between safety and functionality, allowing you t
 ### **Additional Options**
 
 - **REPLACE**: Replaces resources instead of updating them, which may lead to downtime.
-
-- **RETRY**: Retries the synchronization process if it fails.
 
 This configuration is used to manage how Argo CD synchronizes application manifests from a Git repository to a Kubernetes cluster. Each option provides control over how resources are applied and managed during the sync process.
 
