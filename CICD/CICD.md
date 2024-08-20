@@ -114,11 +114,11 @@ You may visit [Minikube's start guide](https://minikube.sigs.k8s.io/docs/start/)
 
   <img width="706" alt="Screenshot 2024-08-19 205107" src="https://github.com/user-attachments/assets/6b80385a-038c-4f70-9ce8-f726db047693">
 
-### **Set Up CircleCI**
+## **Set Up CircleCI**
 
 To set up and configure CircleCI for continuous integration, follow these detailed steps:
 
-## **1. Sign Up and Connect Your Repository**
+### **1. Sign Up and Connect Your Repository**
 
 - Go to the [CircleCI website](https://circleci.com) and sign up for a free account using GitHub or Bitbucket.
 
@@ -139,12 +139,12 @@ To set up and configure CircleCI for continuous integration, follow these detail
 - Choose a repo, select either github, gitlab or gitbucket as repo source.
 - Authorize CircleCI to access your GitHub or Bitbucket account.
 
-## **2. CircleBot, will prepare a custom starter config file to build and test your code.**
+### **2. CircleBot, will prepare a custom starter config file to build and test your code.**
 
 2. **CircleCI Configuration**
    - A `.circleci/config.yml` file will be created automatically if it doesnt already exist. Review it and click `submit and run`. You may not want to run the one that is suggested for you, you may simply select to run a `simlpe hello world` option, to proceed, then go to your github repo and change it to a working config below that will build and store your codes as images in your docker hub container repository.
 
-## **4. Configure Project Settings**
+### **4. Configure Project Settings**
  - By default. a trigger is already created for you, you can check if it exists or you create one.
 
    <img width="749" alt="image" src="https://github.com/user-attachments/assets/57056a0f-0d2d-439b-a083-7a8507716ecf">
@@ -235,16 +235,16 @@ To set up and configure CircleCI for continuous integration, follow these detail
     
     ```
 
-## **3. Commit and Push Changes**
+### **3. Commit and Push Changes**
 
 - Commit the `.circleci/config.yml` file to your repository: This step is taken when you save the config file.
 
-## **5. Trigger a Build**
+### **5. Trigger a Build**
 
 - Push a commit to your github repository to trigger the first build. You can make any small modification to the config.yml file and commit it to initiate a trigger. This step will be mentioned again when we deploy argoCD.
 - Monitor the build process in the CircleCI dashboard under the **Pipelines** section.
 
-## **6. Monitor and Manage**
+### **6. Monitor and Manage**
 
 - Use the CircleCI `dashboard` --> Click on `Pipelines` to view build logs, test results, and deployment status.
 - Failed builds are automatically sent to your email used to register a CircleCI account, sometime in junk/spam folder, you may add it to safe sender list.
