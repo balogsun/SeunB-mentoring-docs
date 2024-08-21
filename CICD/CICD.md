@@ -446,8 +446,8 @@ Certainly! Here’s a conclusion statement for your report:
 
 ### **In Conclusion**
 
-By following this guide, you’ll have set up a budget-friendly CI/CD system on Windows using tools like Chocolatey, Docker, Git, Minikube, kubectl, CircleCI, and ArgoCD. This setup makes your development process smoother and cuts down on cloud costs.
+By following this guide, you’ll have set up a budget-friendly CI/CD system running kubernetes on your Windows/Desktop using tools like Chocolatey, Docker, Git, Minikube, kubectl, CircleCI, and ArgoCD. This setup makes your development process smoother and cuts down on cloud costs.
 
-You’ll learn how to set up and use each tool, connect them together, and automate your development tasks. With Minikube, you can run Kubernetes locally, and with ArgoCD, you can deploy and manage your apps.
+You’ll discover how to set up and use each tool, connect them together, and automate your development tasks. With Minikube, you can run Kubernetes locally, and with CircleCI+ArgoCD, you can integrate/deploy and manage your apps.
 
 Using these tools will help you manage your code, build projects, and deploy apps more easily and effectively, making your development work more reliable and efficient.
