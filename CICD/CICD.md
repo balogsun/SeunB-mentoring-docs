@@ -82,6 +82,8 @@ You may visit [Minikube's start guide](https://minikube.sigs.k8s.io/docs/start/)
    minikube start --driver=hyperv --docker-env="desktop-linux"
    ```
 
+   <img width="568" alt="image" src="https://github.com/user-attachments/assets/376845b5-fbc4-4763-8a91-22a2556851f9">
+
    Additional Minikube commands:
 
    ```bash
