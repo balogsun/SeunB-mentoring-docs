@@ -155,7 +155,7 @@ To set up and configure CircleCI for continuous integration, follow these detail
 
 - To prevent authentication errors to your docker hub environment, you need to set it in your environmental variables.
 - In the CircleCI dashboard, go to **Project Settings** > **Environment Variables**.
-- Add any necessary environment variables (e.g., `DOCKER_USER`, `DOCKER_PASS` for Docker authentication).
+- Add any necessary environment variables (e.g., `DOCKER_USER`, `DOCKER_PASS` for DockerHub authentication).
 - Put in you credentials for your dockerhub account user here.
 
   <img width="766" alt="image" src="https://github.com/user-attachments/assets/39b5e438-4c02-4454-9a46-7404d7d0eb92">
@@ -163,7 +163,7 @@ To set up and configure CircleCI for continuous integration, follow these detail
 ### **I have written below a Config File that will securely integrate the hotel booking application for circleCI**
 
    **Note**, I have deliberately instructed the security tools to bypass any vulnerabilty just for demo purposes only.
-   The workflow will fail with an `exit code` if there are any vulnerabilities found in the code or docker images built. For production purpose, remove the string `|| true` in the config file.
+   The pipeline will fail with an `exit code` if there are any vulnerabilities found in the code or docker images built. For production purpose, remove the string `|| true` in the config file.
 
     ```yaml
     version: 2.1
