@@ -43,11 +43,25 @@ Chocolatey is a package manager for Windows, designed to make the installation, 
 
 ### **Install Docker Desktop**
 
-1. Follow the instructions at [Docker's official documentation](https://docs.docker.com/desktop/install/windows-install/).
+Follow the instructions at [Docker's official documentation](https://docs.docker.com/desktop/install/windows-install/).
 
 ### **Install Git**
 
-1. Download and install Git from [Git SCM](https://git-scm.com/download/win).
+Download and install Git from [Git SCM](https://git-scm.com/download/win).
+
+Follow the instructions at [Kubernetes official documentation](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/).
+
+To install kubectl using Chocolatey:
+
+   ```powershell
+   choco install kubernetes-cli
+   ```
+
+Test to ensure the version installed is up-to-date:
+
+   ```bash
+   kubectl version --client
+   ```
 
 ### **Minikube for Windows**
 
@@ -95,20 +109,6 @@ You may visit [Minikube's start guide](https://minikube.sigs.k8s.io/docs/start/)
    ```
 
    For more information, visit [Minikube's documentation](https://minikube.sigs.k8s.io/docs/start/) where you can find basic sample deployments you can try your hands on.
-
-1. Follow the instructions at [Kubernetes official documentation](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/).
-
-2. To install kubectl using Chocolatey:
-
-   ```powershell
-   choco install kubernetes-cli
-   ```
-
-3. Test to ensure the version installed is up-to-date:
-
-   ```bash
-   kubectl version --client
-   ```
 
 ### **Open the GitHub URL [Hotel-Booking](https://github.com/balogsun/hotel-booking.git) and fork the repository.**
 
