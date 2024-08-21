@@ -139,12 +139,12 @@ To set up and configure CircleCI for continuous integration, follow these detail
 - Choose a repo, select either github, gitlab or gitbucket as repo source.
 - Authorize CircleCI to access your GitHub or Bitbucket account.
 
-### **2. CircleBot, will prepare a custom starter config file to build and test your code.**
+### **CircleBot, will prepare a custom starter config file to build and test your code.**
 
-2. **CircleCI Configuration**
+ **CircleCI Configuration**
    - A `.circleci/config.yml` file will be created automatically if it doesnt already exist. Review it and click `submit and run`. You may not want to run the one that is suggested for you, you may simply select to run a `simlpe hello world` option, to proceed, then go to your github repo and change it to a working config below that will build and store your codes as images in your docker hub container repository.
 
-### **4. Configure Project Settings**
+### **Configure Project Settings**
  - By default. a trigger is already created for you, you can check if it exists or you create one.
 
    <img width="749" alt="image" src="https://github.com/user-attachments/assets/57056a0f-0d2d-439b-a083-7a8507716ecf">
@@ -160,9 +160,9 @@ To set up and configure CircleCI for continuous integration, follow these detail
 
   <img width="766" alt="image" src="https://github.com/user-attachments/assets/39b5e438-4c02-4454-9a46-7404d7d0eb92">
 
-### **I have written below a Config File that will securely integrate the hotel booking application for circleCI**
+### **I have written below a Config File that will securely integrate the hotel booking application for CircleCI**
 
-   **Note**, I have deliberately instructed the security tools to bypass any vulnerabilty just for demo purposes only.
+   **Note**, I have deliberately instructed the security tools to bypass any vulnerability just for demo purposes only.
    The pipeline will fail with an `exit code` if there are any vulnerabilities found in the code or docker images built. For production purpose, remove the string `|| true` in the config file.
 
     ```yaml
@@ -294,8 +294,8 @@ By following these steps, you can set up CircleCI to automate your project's bui
    ![Screenshot 2024-08-18 173906](https://github.com/user-attachments/assets/9857bb18-067c-44b2-a007-81761fe031a4)
 
 4. Download and install Argo CD CLI:
-    - Visit [ArgoCD releases](https://github.com/argoproj/argo-cd/releases/tag/v2.12.1) for the latest version. Explore the github repo for newer relaease if neccessary.
-    - Run ArgoCD CLI commands from the Windows command prompt, Open windows cmd as administrator, change directory to location where you downloaded the argocd exe file. Do not double click on the exe file and try to run directly from windows, it may be flagged.
+    - Visit [ArgoCD releases](https://github.com/argoproj/argo-cd/releases/tag/v2.12.1) for the latest version. Explore the GitHub repo for newer release if necessary.
+    - Run ArgoCD CLI commands from the Windows command prompt, Open windows CMD as administrator, change directory to location where you downloaded the argocd exe file. Do not double click on the exe file and try to run directly from windows, it may be flagged.
 
       ```bash
       argocd login $ARGOCD_SERVER --username admin --password $ARGO_PWD --<insecure/secure>
@@ -322,7 +322,7 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
    <img width="277" alt="image" src="https://github.com/user-attachments/assets/cdbc322e-178b-422f-b352-9950086e939d">
 
- The password is still encryped so you have to decrypt it.
+ The password is still encrypted so you have to decrypt it.
 
  Windows may not support native base64 decoding, you can use an online website at <https://www.base64decode.org/>, insert the values and decode it.
 
