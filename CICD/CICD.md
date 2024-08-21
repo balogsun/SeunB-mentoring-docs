@@ -372,7 +372,7 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
   <img width="763" alt="image" src="https://github.com/user-attachments/assets/6745db79-124c-4011-a486-da3162c3f9c2">
 
-- Upon completion of the creation, argoCD will attempt to automatically deploy the hotel app using the `K8S` path that we have defined, this is where the `deployment.yml file` was placed. Upon successfuly deployment, We will find the hotle app deployed in our cluster server.
+- Upon completion of the creation, argoCD will attempt to automatically deploy the hotel app using the `K8S` path that we have defined, this is where the `deployment.yml file` was placed. Upon successful deployment, We will find the hotel app deployed in our cluster server.
 
   ```
   kubectl get all
