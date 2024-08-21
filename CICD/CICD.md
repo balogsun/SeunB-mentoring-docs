@@ -390,7 +390,7 @@ kubectl get nodes -o wide
 
 From the checks above, url will be `http://172.27.217.12:30537`
 
-- Now we can make a change/update to the booking app by modifying a content of the source codes, here i have modified some details in the `src\routes\home\home.jsx` path. Once the file is saved and comitted, CircleCI previously configured will automatically detect this change and run the pipeline in .CircleCI/config.yml, to scan and build a new image, then push it to Docker Hub repository, awaiting deployment by argoCD.
+- Now we can make a change/update to the booking app by modifying a content of the source codes, here i have modified some details in the `src\routes\home\home.jsx` path. Once the file is saved and committed, CircleCI previously configured will automatically detect this change and run the pipeline in `.CircleCI/config.yml`, to scan and build a new image, then push it to Docker Hub repository, ready for deployment by argoCD.
 
   <img width="506" alt="image" src="https://github.com/user-attachments/assets/01cbede9-0d4f-48b0-a83b-a544502e783a">
   
