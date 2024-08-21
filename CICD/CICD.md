@@ -380,7 +380,7 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
   <img width="572" alt="Screenshot 2024-08-18 202348" src="https://github.com/user-attachments/assets/26231819-5434-4f7f-84f8-8a9e756da34d">
 
-- We can access the hotel app using the minikube controlplane NodeIP and hotel service port no.
+- We can access the hotel app using the `minikube controlplane NodeIP` and `hotel service port no`.
 
 ```
 kubectl get nodes -o wide
