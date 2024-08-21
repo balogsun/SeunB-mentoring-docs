@@ -257,7 +257,7 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
 ## **Lets now Install ArgoCD**
 
-2. Create the namespace and install ArgoCD:
+1. Create the namespace and install ArgoCD:
 
    ```bash
    kubectl create namespace argocd
@@ -267,25 +267,10 @@ By following these steps, you can set up CircleCI to automate your project's bui
    ```
    kubectl -n argocd get all
    kubectl get svc -n argocd
-   ```
+   ```    
 
-3. Download and install Argo CD CLI:
-    - Visit [ArgoCD releases](https://github.com/argoproj/argo-cd/releases/tag/v2.12.1) for the latest version. Explore the github repo for newer relaease if neccessary.
-    - Run ArgoCD CLI commands from the Windows command prompt, Open windows cmd as administrator, change directory to location where you downloaded the argocd exe file. Do not double click on the exe file and try to run directly from windows, it may be flagged.
-
-      ```bash
-      argocd login $ARGOCD_SERVER --username admin --password $ARGO_PWD --<insecure/secure>
-
-      #Sample command below:
-      argocd-windows-amd64.exe login <IpAddress>:portNo> --username admin --password xxxxxx –-insecure
-
-      ```
-
-      <img width="667" alt="image" src="https://github.com/user-attachments/assets/ebf6741b-a4f0-4bad-84ba-4217fd3becbe">
-
-    - Agrocd-server service is using “ClusterIP”. We can change it to NodePort” to access the agrocd UI from your local browser.
-
-4. Change ArgoCD server service type to NodePort:
+2. Change ArgoCD server service type to NodePort:
+   - Agrocd-server service is using “ClusterIP”. We can change it to NodePort” to access the agrocd UI from your local browser.
 
    ```bash
    kubectl edit svc argocd-server -n argocd
@@ -297,7 +282,7 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
    ![Screenshot 2024-08-18 172507](https://github.com/user-attachments/assets/a7b8655d-00a2-4983-a69b-8d8b026cd72f)
 
-6. Note the Control Plane Node IP and ArgoCD service port that will be used to access the argoCD URL:
+3. Note the Minikube Control Plane IP Address and ArgoCD service port that will be used to access the argoCD URL:
 
    ```bash
    kubectl get node -o wide
@@ -308,11 +293,25 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
    ![Screenshot 2024-08-18 173906](https://github.com/user-attachments/assets/9857bb18-067c-44b2-a007-81761fe031a4)
 
-7. Access ArgoCD UI:
+4. Download and install Argo CD CLI:
+    - Visit [ArgoCD releases](https://github.com/argoproj/argo-cd/releases/tag/v2.12.1) for the latest version. Explore the github repo for newer relaease if neccessary.
+    - Run ArgoCD CLI commands from the Windows command prompt, Open windows cmd as administrator, change directory to location where you downloaded the argocd exe file. Do not double click on the exe file and try to run directly from windows, it may be flagged.
+
+      ```bash
+      argocd login $ARGOCD_SERVER --username admin --password $ARGO_PWD --<insecure/secure>
+
+      #Sample command below:
+      argocd-windows-amd64.exe login <MinikubeIpAddress>:ArgoCDServicePortNo> --username admin --password xxxxxx –-insecure
+
+      ```
+      
+      <img width="667" alt="image" src="https://github.com/user-attachments/assets/ebf6741b-a4f0-4bad-84ba-4217fd3becbe">   
+
+5. Access ArgoCD UI:
 
    Visit `http://ControlPlaneNodeIP:ArgocdServicePort`.
 
-8. Retrieve the initial admin password:
+6. Retrieve the initial admin password:
  After reaching the UI for the first time, you can login with username: admin and the random password generated during the installation. You can find the password by running:
 
    ```bash
@@ -338,7 +337,7 @@ By following these steps, you can set up CircleCI to automate your project's bui
 
  <img width="517" alt="image" src="https://github.com/user-attachments/assets/f241b221-97f4-4e20-a7f9-f7da69acac4b">
 
-9. You should delete the initial secret afterwards:
+7. You should delete the initial secret afterwards:
 
    ```bash
    kubectl get secret -n argocd
