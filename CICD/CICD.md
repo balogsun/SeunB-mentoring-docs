@@ -1,4 +1,4 @@
-# **Building a Cost-Effective Kubernetes Environment with Automated CI/CD Pipelines: A Comprehensive Guide**
+# **Building a Cost-Effective Kubernetes Environment with secure CI/CD Pipelines: A Comprehensive Guide**
 
 If you want to optimize costs in setting up and managing Kubernetes in a cloud environment with integrated CI/CD workflows, this guide provides practical strategies to help you achieve that.
 
