@@ -1913,19 +1913,22 @@ nano /etc/filebeat/modules.d/system.yml
 ```
 - module: system
 
-# Syslog
-
+  # Syslog
   syslog:
     enabled: true
     var.paths:
       - /var/log/syslog*
-  
-# Authorization logs
 
+  # Authorization logs
   auth:
     enabled: true
     var.paths:
       - /var/log/auth.log*
+
+  # Metrics collection
+  metrics:
+    enabled: true
+    period: 10s  # Collect metrics every 10 seconds
 ```
 
 Below can be used if it were nginx server that was installed.
