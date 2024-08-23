@@ -1728,7 +1728,7 @@ path.logs: /var/log/elasticsearch
 network.host: <ipaddress>
 http.port: 9200
 discovery.seed_hosts: ["<>"]
-cluster.initial_master_nodes: ["node-1"]
+cluster.initial_master_nodes: ["ServerA"]
 xpack.security.enabled: false
 ```
 
@@ -1811,7 +1811,10 @@ sudo sed -i 's/#server.host: "localhost"/server.host: "<ipaddress>"/' /etc/kiban
 ```
 server.name: "ServerA"
 server.publicBaseUrl: "http://<ipaddress>:5601"
+xpack.encryptedSavedObjects.encryptionKey: 7i3blv/zcrx7IaZF8eFGiG6m3u4iaGdYac5QgPtVRrs=
 ```
+
+### use below command to generate a random encryption key
 
 #### Start and enable Kibana
 
@@ -1831,7 +1834,7 @@ sudo ufw allow 5044/tcp   # Logstash
 sudo ufw enable
 ```
 
-### **Install and Configure Filebeat on All Servers that will feed logs to kibana**
+### **Install and Configure Filebeat/MetricBeat on All Servers that will feed logs to kibana**
 
 ```bash
 # Install Filebeat
@@ -1841,9 +1844,11 @@ echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://arti
 
 sudo apt update
 sudo apt install -y filebeat
+sudo apt install -y metricbeat
 ```
 
 Edit the Filebeat configuration file `/etc/filebeat/filebeat.yml` on each server:
+Edit the Filebeat configuration file `/etc/metricbeat/metricbeat.yml` on each server:
 
 - setting up filebeat to ship logs to elastic search,
 
@@ -1872,6 +1877,7 @@ setup.kibana:
 ```
 cd /usr/share/filebeat/bin
 filebeat modules list
+metricbeat modules list
 ```
 
 I have installed apache previously so we’re going to configure Filebeat to ship apache logs, system logs and authentication logs.
@@ -1954,14 +1960,61 @@ Test that the configuration is okay
 ```
 $ sudo filebeat test config
 sudo filebeat test config -e
+sudo metricbeat test config
 Config OK
 ```
 
-#### **2.3 Start and Enable Filebeat on All Servers**
+```
+filebeat modules enable docker
+filebeat modules enable kubernetes
+filebeat modules enable linux
+```
+
+```
+nano /etc/metricbeat/modules.d/docker.yml
+```
+
+```
+- module: docker
+  metricsets:
+    - container
+    - cpu
+    - diskio
+    - event
+    - healthcheck
+    - info
+    - memory
+    - network
+  #  - network_summary
+  period: 10s
+  hosts: ["unix:///var/run/docker.sock"]
+```
+
+```
+nano /etc/metricbeat/modules.d/kubernetes.yml
+```
+
+```
+- module: kubernetes
+  metricsets:
+    - node
+    - system
+    - pod
+    - container
+    - volume
+  period: 10s
+  hosts: localhost:10250
+  bearer_token_file: /root/.kube/config
+  #ssl.certificate_authorities:
+  #  - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+```
+
+#### **2.3 Start and Enable Filebeat/Metricbeats on All Servers**
 
 ```bash
 # Start and enable Filebeat
 sudo systemctl start filebeat
+sudo systemctl start metricbeat
 sudo systemctl enable filebeat
 sudo systemctl status filebeat
 ```
