@@ -1,7 +1,6 @@
+# **End-to-End Deployment of a Microservice Application with Terraform, AWS EKS, GitHub Actions, and Monitoring**
 
-# Microservices Architecture for Hotel Booking Application
-
-The microservices architecture for a hotel booking application like Stay Booker Pro, we can break down the functionalities into distinct microservices. Each microservice will handle a specific aspect of the application, ensuring scalability, maintainability, and independent deployment.
+Let's walk through the process of deploying a hotel booking application from start to finish. This guide will take you through building the Dockerfile, using Terraform to set up a cluster on AWS EKS, and creating a secure CI/CD pipeline with GitHub Actions. Additionally, we'll cover setting up monitoring tools like Prometheus and Grafana to ensure the application's operational efficiency and reliability. By the end of this guide, you should have a clear understanding of how these components integrate to build and maintain a robust, scalable application environment.
 
 [GitHub Repository](https://github.com/balogsun/hotel-booking.git)
 
@@ -13,12 +12,6 @@ The microservices architecture for a hotel booking application like Stay Booker 
 - **Notification Service**: Sends booking confirmations, reminders, and notifications.
 - **Review Service**: Manages user reviews and ratings for hotels.
 - **Hotel Management Service**: Handles hotel listings, room details, and amenities.
-
-### Technology Stack
-
-- **Programming Language**: JavaScript/TypeScript
-- **Framework**: Node.js with Express.js for the backend
-- **Frontend**: React with Tailwind CSS
 
 However, in our scenario, the services have been bundled to run together as a single bulk microservice due to deployment complexity and resource limitations.
 
