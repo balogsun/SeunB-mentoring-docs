@@ -2,9 +2,15 @@
 
 Let's walk through the process of deploying a hotel booking application from start to finish. This guide will take you through building the Dockerfile, using Terraform to set up a cluster on AWS EKS, and creating a secure CI/CD pipeline with GitHub Actions. Additionally, we'll cover setting up monitoring tools like Prometheus and Grafana to ensure the application's operational efficiency and reliability. By the end of this guide, you should have a clear understanding of how these components integrate to build and maintain a robust, scalable application environment.
 
+### **Open the GitHub URL [Hotel-Booking](https://github.com/balogsun/hotel-booking.git) and fork the repository.**
+
+- Follow the instructions to complete cloning the repository to your own github account so that you can work with the copy you have created.
+
+  <img width="706" alt="Screenshot 2024-08-19 205107" src="https://github.com/user-attachments/assets/6b80385a-038c-4f70-9ce8-f726db047693">
+
 [GitHub Repository](https://github.com/balogsun/hotel-booking.git)
 
-## Microservices Overview
+**The microservice architecture of this application includes:**
 
 - **User Service**: Manages user registration, authentication, and profiles.
 - **Booking Service**: Handles booking processes, availability checks, and reservations.
@@ -13,9 +19,14 @@ Let's walk through the process of deploying a hotel booking application from sta
 - **Review Service**: Manages user reviews and ratings for hotels.
 - **Hotel Management Service**: Handles hotel listings, room details, and amenities.
 
-However, in our scenario, the services have been bundled to run together as a single bulk microservice due to deployment complexity and resource limitations.
+However, in this scenario, these services have been bundled together into a single deployment.
 
-### Next, we will write a Dockerfile, test the code build, and upon successful build, insert the Dockerfile path into our proposed GitHub workflow
+Bundling microservices into a single deployment can simplify the process and reduce complexity, particularly in environments with limited resources. This approach lowers operational overhead, makes scaling easier, and can be advantageous when speed of delivery or resource constraints are key factors. While this method can be practical in certain situations, it is typically a temporary solution, with the goal of eventually transitioning to a fully decoupled microservices architecture as infrastructure and capabilities improve.
+
+### Writing the docker file:
+In the repo provided above, the code is written with javascript, so the Dockerfile would be written with a Node.js base image, specifying the necessary version, installing dependencies using npm, and setting up the environment to build and run the application.
+
+### The intention is to write a Dockerfile, test the code build, and upon successful build, insert the Dockerfile path into our proposed GitHub workflow
 
 ## Dockerfile
 
@@ -60,17 +71,109 @@ CMD ["npm", "start"]
 - **Exposing Port**: Exposes port 3000, which the Next.js app listens on.
 - **Starting the Application**: Defines the default command to start the Next.js app using `npm start`.
 
-## Kubernetes Cluster Setup
+### Kubernetes Cluster Setup
+Setting up a Kubernetes cluster can be a complex process, but with the right tools and instructions, you can simplify the process significantly. Below is a comprehensive guide to getting your Kubernetes cluster up and running on a Linux environment, specifically Ubuntu.
 
-I set up a Kubernetes cluster using the following Terraform modules in my repo: [Terraform EKS Module](https://github.com/balogsun/terraform-eks-with-basic-app.git) and steps summarized below:
+#### Prerequisites:
 
-- **Install AWS CLI**
-  - Follow AWS documentation: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+- **A Linux Environment (Preferably Ubuntu)**: This guide is tailored for Ubuntu, but similar steps can be adapted for other Linux distributions.
 
-- **Install Terraform**
-  - Follow instructions: https://developer.hashicorp.com/terraform/install
+####: Install AWS CLI
 
-- **Create Terraform Files and Configure AWS Provider**
+The AWS CLI is a unified tool that provides a consistent interface for interacting with Amazon Web Services. It’s essential for managing your AWS services from the command line.
+
+To install AWS CLI on Ubuntu, follow these steps:
+
+```bash
+sudo apt update
+sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install unzip
+unzip awscliv2.zip
+sudo ./aws/install
+aws --version
+```
+
+Alternatively, you can follow the official AWS documentation for more detailed instructions: [AWS CLI Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+
+### **Create AWS IAM User and Configure AWS CLI**
+
+#### **Sign in to AWS**
+- Go to the [AWS Console](https://aws.amazon.com/console/) and log in.
+
+#### **Navigate to IAM**
+- Search for **IAM** in the AWS Console and select it.
+
+#### **Create a New IAM User**
+- Click **Users** > **Add users**.
+- Enter a user name (e.g., `cli-user`).
+
+#### **Set Permissions**
+- Attach necessary permissions:
+  - **Attach existing policies**: Select `AdministratorAccess` or another policy.
+  - Or **Add user to group**.
+
+#### **Review and Create User**
+- Review details and click **Create user**.
+
+#### **Download AWS Credentials**
+- Click **Create access key** in the `Access Key` section.
+- Download the `.csv` file with the credentials.
+
+#### **Configure AWS CLI**
+- Open a terminal on your machine.
+- Run:
+  ```bash
+  aws configure
+  ```
+- Enter the **Access Key ID** and **Secret Access Key** from the `.csv` file:
+  ```bash
+  AWS Access Key ID [None]: YOUR_ACCESS_KEY_ID
+  AWS Secret Access Key [None]: YOUR_SECRET_ACCESS_KEY
+  Default region name [None]: us-east-1
+  Default output format [None]: json
+  ```
+
+#### **Verify Configuration**
+- Run:
+  ```bash
+  aws sts get-caller-identity
+  ```
+- This should return IAM user information, confirming your CLI setup.
+
+#### Install Terraform
+
+Terraform is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services. Here’s how you can install Terraform on Ubuntu:
+
+```bash
+sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+sudo apt update && sudo apt install gpg
+wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update
+sudo apt install terraform
+terraform version
+```
+
+For more details or alternative installation methods, visit the official Terraform documentation: [Terraform Installation Guide](https://developer.hashicorp.com/terraform/install).
+
+#### Install kubectl
+
+`kubectl` is the command-line tool for Kubernetes. It allows you to run commands against Kubernetes clusters to deploy applications, manage the cluster, and inspect resources.
+
+To install `kubectl`, execute the following commands:
+
+```bash
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --short --client
+kubectl version --client
+```
+
+For a detailed installation guide, refer to the official Kubernetes documentation: [kubectl Installation Guide](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html).
+
+
+### **Next, Create Terraform Modules and Configure AWS Provider**
   - **provider.tf**: Configure AWS provider for `ca-central-1` region, retrieve current region and availability zones.
   ```hcl
   provider "aws" {
@@ -108,16 +211,6 @@ I set up a Kubernetes cluster using the following Terraform modules in my repo: 
 
   - **vpc.tf**: Create VPC with public and private subnets across three availability zones, configure internet and NAT gateways, and set up route tables.
 
-- **Step 2: Configure AWS CLI**
-  - Run `aws configure` and enter AWS credentials, default region (`ca-central-1`), and default output format.
-  ```bash
-  aws configure
-
-  Access Key ID: *********************
-  Secret key: ******************************************
-  Default region Name [none]: ca-central-1
-  Default output format [none]:
-  ```
 
 - **Step 3: Initialize Terraform Modules**
   - Clone the repository, navigate to `terraform-eks-seun`, and run `terraform init`.
