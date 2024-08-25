@@ -1,4 +1,4 @@
-# **A secure End-to-End Deployment of a Microservice Application using Terraform, AWS EKS, GitHub Actions, and Promethues**
+# **A secure End-to-End Deployment of a Microservice Application using Terraform, AWS EKS, GitHub Actions, and Prometheus**
 
 Let's walk through the process of deploying a hotel booking application from start to finish. This guide will take you through building the Dockerfile, using Terraform to set up a cluster on AWS EKS, and creating a secure CI/CD pipeline with GitHub Actions. Additionally, we'll cover setting up monitoring tools like Prometheus and Grafana to ensure the application's operational efficiency and reliability. By the end of this guide, you should have a clear understanding of how these components integrate to build and maintain a robust, scalable application environment.
 
