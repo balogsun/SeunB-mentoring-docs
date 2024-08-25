@@ -62,7 +62,7 @@ Create three VMs using VMware Workstation and a predefined VMDK disk (located at
 
    Repeat these steps for each of the three VMs.
 
-   Now select a virtual machine, click on `VM` then `settings`, this opens the VM properties, click `Add`, select `hard disk`, `scsi` `use an exisitng virtual disk`, browe for location of disk and click `finish`.
+   Now select a virtual machine, click on `VM` then `settings`, this opens the VM properties, click `Add`, select `hard disk`, `scsi` `use an existing virtual disk`, browse for location of disk and click `finish`.
    
   <img width="549" alt="image" src="https://github.com/user-attachments/assets/eec72e38-88c8-4b79-b434-23fe8f18fe95">
   
