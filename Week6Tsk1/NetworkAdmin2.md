@@ -465,8 +465,7 @@ search branch.company.local
 
    Ensure it contains:
 
-   ```plaintext
-
+```plaintext
 network:
   version: 2
   ethernets:
@@ -479,8 +478,6 @@ network:
         addresses:
           - 192.168.5.10
           - 8.8.8.8
-
-
    ```
 
 2. **Apply the Netplan Configuration**
