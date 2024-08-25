@@ -187,7 +187,7 @@ Setting up a Kubernetes cluster can be a complex process, but with the right too
 
 - **A Linux Environment (Preferably Ubuntu)**: This guide is tailored for Ubuntu, but similar steps can be adapted for other Linux distributions.
 
-####: Install AWS CLI
+#### Install AWS CLI
 
 The AWS CLI is a unified tool that provides a consistent interface for interacting with Amazon Web Services. It’s essential for managing your AWS services from the command line.
 
