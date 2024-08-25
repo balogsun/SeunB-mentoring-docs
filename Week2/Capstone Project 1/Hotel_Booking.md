@@ -879,7 +879,7 @@ Verify the added repositories:
 ```bash
 helm repo ls
 ```
-<img width="530" alt="image" src="https://github.com/user-attachments/assets/286962f9-e0ad-40fb-b41a-88a2bd4c9ef4">
+<img width="322" alt="image" src="https://github.com/user-attachments/assets/6e0593d3-e554-4c7a-a551-668c9b2303a2">
 
 Update your Helm repositories:
 
@@ -902,7 +902,7 @@ Install Prometheus and the kube-prometheus-stack using Helm:
 ```bash
 helm install stable prometheus-community/kube-prometheus-stack -n prometheus
 ```
-<img width="611" alt="image" src="https://github.com/user-attachments/assets/0a831ae1-f389-41a3-9cee-7a873303ee89">
+<img width="454" alt="image" src="https://github.com/user-attachments/assets/2f993148-1e7f-48b2-8e35-a3c29ad5cfe6">
 
 ### Check Installation Status
 
@@ -911,14 +911,14 @@ Verify the installation by checking the pods in the `prometheus` namespace:
 ```bash
 kubectl get pods -n prometheus
 ```
-<img width="611" alt="image" src="https://github.com/user-attachments/assets/6d986a88-2f09-42be-992c-89a629a56550">
+<img width="389" alt="image" src="https://github.com/user-attachments/assets/7a3f1ca9-21de-4089-8201-6b8aa8f027b5">
 
 Check the services to ensure both Prometheus and Grafana are running:
 
 ```bash
 kubectl get svc -n prometheus
 ```
-<img width="614" alt="image" src="https://github.com/user-attachments/assets/0d4719aa-f210-4b5e-958c-bcf4ced56bf0">
+<img width="458" alt="image" src="https://github.com/user-attachments/assets/de874e3c-0942-4bdc-ad2a-b211b175be92">
 
 ### Expose Prometheus for External Access
 
@@ -963,7 +963,7 @@ Check the services again to observe the changes:
 ```bash
 kubectl get svc -n prometheus
 ```
-<img width="959" alt="image" src="https://github.com/user-attachments/assets/88743afb-b856-410b-a8f4-13498022a7f8">
+<img width="480" alt="image" src="https://github.com/user-attachments/assets/47930934-913b-44da-998d-1ff8c911267b">
 
 ### Access Grafana GUI
 
@@ -1155,23 +1155,25 @@ To verify that your deployment is successful and accessible, use the following c
 kubectl get svc
 ```
 
-![Load Balancer URL](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/3c0631e4-fc05-434c-b2ea-8d710846d330)
+<img width="357" alt="image" src="https://github.com/user-attachments/assets/0785c451-df23-41dc-96ea-d1ed24fa54bd">
 
 ![Load Balancer Details](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/bf2638e3-6a6b-46b9-8f9f-cee476aef5d7)
 
 ### Handling Pipeline Failures
 
-Building and testing a pipeline might involve some failures. Check the build logs to diagnose issues. Below are screenshots showing both failed and successful workflow runs.
+Building and testing a pipeline might involve some failures. Check the build logs to diagnose issues. Below screenshot showing both failed and successful build runs.
 
-![Failed Workflow](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/a4f4b43b-c5e8-49d8-a5d3-4048556992c3)
+<img width="556" alt="image" src="https://github.com/user-attachments/assets/75c9373d-af85-483f-ab59-9ce326503d17">
 
 ### Testing Changes
 
 For example, updating the `AboutUs.jsx` file located at `src/routes/about-us/AboutUs.jsx` with new contact information and committing the change triggers the pipeline, applying the update immediately.
 
-![Update Commit](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/88b84062-507a-4b21-80cf-05268a34808e)
+<img width="553" alt="image" src="https://github.com/user-attachments/assets/dcb801b7-44a9-400f-b6a6-77fa3723c870">
+
 ![Pipeline Triggered](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/59c88e8a-2527-40c5-afb5-7b10e15c5ed1)
-![Applied Changes](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/b922e957-a6f3-4c28-9008-ce0261022a0b)
+
+<img width="526" alt="image" src="https://github.com/user-attachments/assets/97811039-ad80-4a98-8ac9-3e8df3a240be">
 
 You can make further changes, for instance, in the `src/routes/home/Home.jsx` file.
 
@@ -1189,9 +1191,59 @@ This result can be found in your repository by clicking `security` , `tools`, `c
 
 ![CodeQL Scan Coverage](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/91a44d8e-256f-4ce7-b8d0-dbedd83b1ad9)
 
-### Security Best Practices
+Its good practice to utilize GitHub's secrets management by storing sensitive credentials in the repository settings and referencing them in the workflow.
 
-To enhance security, I utilized GitHub's secrets management by storing sensitive credentials in the repository settings and referencing them in the workflow.
+### Cleaning Up Your Cluster Environment
+
+Once you've verified that everything is working as expected, it's important to clean up your environment to avoid unnecessary costs.
+
+#### Steps to Clean Up:
+
+1. **Navigate to Your Terraform Directory:**
+   Open your terminal and navigate to the directory where your Terraform configuration files are located. If you're following the setup from this guide, the path is likely:
+
+   ```bash
+   cd $HOME/cd hotel-booking
+   ```
+
+2. **Review Your Terraform State:**
+   Review the current state to confirm the resources that will be destroyed.
+
+   ```bash
+   terraform state list
+   ```
+
+3. **Destroy the Terraform-Managed Infrastructure:**
+   Use the `terraform destroy` command to remove all the resources.
+
+   ```bash
+   terraform destroy
+   ```
+
+4. **Confirm the Destruction:**
+   Terraform will list the resources to be destroyed. Confirm the operation by typing `yes`.
+
+   ```bash
+   Enter a value: yes
+   ```
+
+5. **Verify the Destruction:**
+   After the process completes, you can verify that all resources have been destroyed by running:
+
+   ```bash
+   terraform state list
+   ```
+
+   An empty list indicates that all resources have been successfully destroyed.
+
+6. **Optional Clean-Up:**
+   If you wish to remove all Terraform-related files, you can do so with:
+
+   ```bash
+   rm -rf .terraform
+   rm terraform.tfstate
+   rm terraform.tfstate.backup
+   ```
 
 ## Conclusion
 
