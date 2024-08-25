@@ -993,7 +993,6 @@ This will display monitoring metrics for your cluster nodes.
 <img width="724" alt="image" src="https://github.com/user-attachments/assets/b4e2ef24-ace6-43d6-bf85-f59d8f0d3d20">
 
 
-
 ## Implementing CI/CD Pipelines with GitHub Actions to automate Docker Build, Security Checks, and Application Deployment
 
 Automating your CI/CD pipeline ensures that your application is consistently built, tested, and deployed with minimal manual intervention.
@@ -1007,15 +1006,11 @@ Automating your CI/CD pipeline ensures that your application is consistently bui
    - Click on **Actions** in the left sidebar.
    - Under **General**, check the box for `Allow all actions and reusable workflows`.
 
-   ![Enable GitHub Actions](https://github.com/user-attachments/assets/enable-actions.png)
-
 2. **Add Repository Secrets:**
 
    - Go to **Settings** > **Secrets and variables** > **Actions**.
    - Click **New repository secret**.
    - Add your credentials for `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `DOCKERHUB_PASSWORD`, and `DOCKERHUB_USERNAME`.
-
-   ![Add Secrets](https://github.com/user-attachments/assets/add-secrets.png)
 
 ### Create GitHub Workflow File
 
@@ -1152,45 +1147,51 @@ jobs:
   - **Update kubeconfig**: Updates `kubeconfig` for the EKS cluster.
   - **Deploy to EKS**: Deploys the application to the EKS cluster using Kubernetes manifests.
 
+### Check the Deployment
 
+To verify that your deployment is successful and accessible, use the following command to get the external URL of the load balancer:
 
-### Check the deployment by accessing the loadbalancer URL that has been created from the `kubectl get svc` command.
+```bash
+kubectl get svc
+```
 
-![Screenshot 2024-06-20 185746](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/3c0631e4-fc05-434c-b2ea-8d710846d330)
+![Load Balancer URL](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/3c0631e4-fc05-434c-b2ea-8d710846d330)
 
-![Screenshot 2024-06-20 185853](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/8bd17c5e-d135-4dee-ba0b-c4adb39685d1)
+![Load Balancer Details](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/bf2638e3-6a6b-46b9-8f9f-cee476aef5d7)
 
-![Screenshot 2024-06-20 190305](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/bf2638e3-6a6b-46b9-8f9f-cee476aef5d7)
+### Handling Pipeline Failures
 
+Building and testing a pipeline might involve some failures. Check the build logs to diagnose issues. Below are screenshots showing both failed and successful workflow runs.
 
-### Below I have attached screenshots to show failed and successful workflow runs.
-![Screenshot 2024-06-20 184929](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/a4f4b43b-c5e8-49d8-a5d3-4048556992c3)
+![Failed Workflow](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/a4f4b43b-c5e8-49d8-a5d3-4048556992c3)
 
+### Testing Changes
 
-### Also, i made a change to the `AboutUs.jsx` file [updating the contact information to my own email address details] and commited the codes, upon pushing the commit, the pipeline was triggered and the change was effected immediately.
+For example, updating the `AboutUs.jsx` file located at `src/routes/about-us/AboutUs.jsx` with new contact information and committing the change triggers the pipeline, applying the update immediately.
 
-<img width="749" alt="Screenshot 2024-06-20 191107" src="https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/88b84062-507a-4b21-80cf-05268a34808e">
+![Update Commit](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/88b84062-507a-4b21-80cf-05268a34808e)
+![Pipeline Triggered](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/59c88e8a-2527-40c5-afb5-7b10e15c5ed1)
+![Applied Changes](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/b922e957-a6f3-4c28-9008-ce0261022a0b)
 
-<img width="917" alt="Screenshot 2024-06-20 191159" src="https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/59c88e8a-2527-40c5-afb5-7b10e15c5ed1">
+You can make further changes, for instance, in the `src/routes/home/Home.jsx` file.
 
-<img width="782" alt="Screenshot 2024-06-20 192041" src="https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/b922e957-a6f3-4c28-9008-ce0261022a0b">
+### Review Scan Results
 
- - Another place i can make a change to is at location repo /hotel-booking/src/routes/home/Home.jsx
+The Trivy scan results are available at the following repository download URL: [Scan Results](https://github.com/balogsun/hotel-booking/actions/runs/9589669410/artifacts/1618838601)
 
-### The Artifact for the Trivy scan results was generated in the repository download URL at: [Scan Results](<https://github.com/balogsun/hotel-booking/actions/runs/9589669410/artifacts/1618838601>)
+![Trivy Scan Results](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/bf2c3f37-f789-4e78-8867-6ced99b95b97)
 
-Screenshot also attached.
-<img width="867" alt="image" src="https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/bf2c3f37-f789-4e78-8867-6ced99b95b97">
+### CodeQL Scan Results
 
+The CodeQL analysis scanned 20 out of 20 JavaScript files. Check the status page for overall coverage information: [CodeQL Scan Result](https://github.com/balogsun/hotel-booking/security/code-scanning/tools/CodeQL/status/)
 
-### The CodeQL scanned 20 out of 20 JavaScript files in this invocation. Check the status page for overall coverage information: [CodeQL Scan result](<https://github.com/balogsun/hotel-booking/security/code-scanning/tools/CodeQL/status/>)
+![CodeQL Scan Coverage](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/91a44d8e-256f-4ce7-b8d0-dbedd83b1ad9)
 
-Screenshot also attached.
-<img width="521" alt="image" src="https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/91a44d8e-256f-4ce7-b8d0-dbedd83b1ad9">
+### Security Best Practices
 
-
-- **Security Best Practices**: I applied secrets management by setting up secrets and credentials in the GitHub repo settings, as well as place them as strings in the GitHub workflow.
+To enhance security, I utilized GitHub's secrets management by storing sensitive credentials in the repository settings and referencing them in the workflow.
 
 ## Conclusion
 
-The microservices architecture for the Hotel Service application ensures modularity, scalability, and maintainability. By bundling services for deployment simplicity, utilizing Docker for containerization, and leveraging Kubernetes for orchestration, I have created a robust and efficient deployment pipeline. Implementing CI/CD with GitHub Actions, along with comprehensive monitoring and logging, guarantees continuous delivery and operational visibility. This architecture lays a solid foundation for the application's future growth and scalability.
+The microservices architecture for the Hotel Service application ensures modularity, scalability, and maintainability. By using Docker for containerization and Kubernetes for orchestration, along with a robust CI/CD pipeline implemented with GitHub Actions, you create an efficient and automated deployment process. Comprehensive monitoring and logging further guarantee operational visibility and continuous delivery, setting a strong foundation for future growth and scalability.
+
