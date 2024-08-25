@@ -173,58 +173,489 @@ kubectl version --client
 For a detailed installation guide, refer to the official Kubernetes documentation: [kubectl Installation Guide](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html).
 
 
-### **Next, Create Terraform Modules and Configure AWS Provider**
-  - **provider.tf**: Configure AWS provider for `ca-central-1` region, retrieve current region and availability zones.
-  ```hcl
-  provider "aws" {
-    region  = "ca-central-1"
+
+### Creating an AWS Kubernetes Cluster with Terraform
+
+Follow these steps to set up your AWS Kubernetes cluster using Terraform:
+
+#### **1. Prepare Your Environment**
+Create a folder on your Ubuntu machine:
+
+```bash
+mkdir eks_cluster
+cd eks_cluster
+touch eks-cluster.tf eks-worker-nodes.tf outputs.tf providers.tf variables.tf vpc.tf workstation-external-ip.tf
+```
+
+#### **2. Define EKS Cluster Resources**
+Edit `eks-cluster.tf`:
+
+```bash
+nano eks-cluster.tf
+```
+
+**Functions:**
+- **Create IAM Role:** Defines an IAM role for EKS to manage AWS services.
+- **Attach IAM Policies:** Attaches necessary policies for EKS to manage clusters.
+- **Create Security Group:** Sets up a security group for cluster communication.
+- **Create EKS Cluster:** Defines the EKS cluster and its configuration.
+
+```hcl
+# EKS Cluster Resources
+resource "aws_iam_role" "my-cluster" {
+  name = "my-cluster"
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "my-cluster-AmazonEKSClusterPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.my-cluster.name
+}
+
+resource "aws_iam_role_policy_attachment" "my-cluster-AmazonEKSServicePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  role       = aws_iam_role.my-cluster.name
+}
+
+resource "aws_security_group" "my-cluster" {
+  name        = "my-cluster-sg"
+  description = "Cluster communication with worker nodes"
+  vpc_id      = aws_vpc.my-vpc.id
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
+  tags = { Name = "my-cluster" }
+}
 
-  data "aws_region" "current" {}
+resource "aws_security_group_rule" "my-cluster-ingress-workstation-https" {
+  cidr_blocks       = [local.workstation-external-cidr]
+  description       = "Allow workstation to communicate with the cluster API Server"
+  from_port         = 443
+  protocol          = "tcp"
+  security_group_id = aws_security_group.my-cluster.id
+  to_port           = 443
+  type              = "ingress"
+}
 
-  data "aws_availability_zones" "available" {}
+resource "aws_eks_cluster" "my-cluster" {
+  name     = var.cluster-name
+  role_arn = aws_iam_role.my-cluster.arn
+  vpc_config {
+    security_group_ids = [aws_security_group.my-cluster.id]
+    subnet_ids         = aws_subnet.my-vpc[*].id
+  }
+  depends_on = [
+    aws_iam_role_policy_attachment.my-cluster-AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.my-cluster-AmazonEKSServicePolicy,
+  ]
+}
+```
+
+#### **3. Define EKS Worker Nodes**
+Edit `eks-worker-nodes.tf`:
+
+```bash
+nano eks-worker-nodes.tf
+```
+
+**Functions:**
+- **Create IAM Role for Nodes:** Defines an IAM role for EKS worker nodes.
+- **Define IAM Policies for Autoscaling:** Specifies policies for autoscaling worker nodes.
+- **Attach IAM Policies:** Attaches necessary policies for EKS worker nodes.
+- **Create Node Group:** Defines the node group configuration for worker nodes.
+
+```hcl
+# EKS Worker Nodes Resources
+resource "aws_iam_role" "my-cluster-node" {
+  name = "my-cluster-node"
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+data "aws_iam_policy_document" "worker_autoscaling" {
+  statement {
+    sid    = "eksWorkerAutoscalingAll"
+    effect = "Allow"
+    actions = [
+      "autoscaling:DescribeAutoScalingGroups",
+      "autoscaling:DescribeAutoScalingInstances",
+      "autoscaling:DescribeLaunchConfigurations",
+      "autoscaling:DescribeTags",
+      "ec2:DescribeLaunchTemplateVersions",
+    ]
+    resources = ["*"]
+  }
+  statement {
+    sid    = "eksWorkerAutoscalingOwn"
+    effect = "Allow"
+    actions = [
+      "autoscaling:SetDesiredCapacity",
+      "autoscaling:TerminateInstanceInAutoScalingGroup",
+      "autoscaling:UpdateAutoScalingGroup",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "autoscaling:ResourceTag/kubernetes.io/cluster/${aws_eks_cluster.my-cluster.id}"
+      values   = ["owned"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "autoscaling:ResourceTag/k8s.io/cluster-autoscaler/enabled"
+      values   = ["true"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "workers_autoscaling" {
+  policy_arn = aws_iam_policy.worker_autoscaling.arn
+  role       = aws_iam_role.my-cluster-node.name
+}
+
+resource "aws_iam_policy" "worker_autoscaling" {
+  name_prefix = "eks-worker-autoscaling-${aws_eks_cluster.my-cluster.id}"
+  description = "EKS worker node autoscaling policy for cluster ${aws_eks_cluster.my-cluster.id}"
+  policy      = data.aws_iam_policy_document.worker_autoscaling.json
+}
+
+resource "aws_iam_role_policy_attachment" "my-cluster-node-AmazonEKSWorkerNodePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.my-cluster-node.name
+}
+
+resource "aws_iam_role_policy_attachment" "my-cluster-node-AmazonEKS_CNI_Policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.my-cluster-node.name
+}
+
+resource "aws_iam_role_policy_attachment" "my-cluster-node-AmazonEC2ContainerRegistryReadOnly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.my-cluster-node.name
+}
+
+resource "aws_eks_node_group" "my-cluster-node-group" {
+  cluster_name    = aws_eks_cluster.my-cluster.name
+  node_group_name = "my-cluster-node-group"
+  node_role_arn   = aws_iam_role.my-cluster-node.arn
+  subnet_ids      = aws_subnet.my-vpc[*].id
+  instance_types  = [var.eks_node_instance_type]
+  remote_access {
+    ec2_ssh_key = var.key_pair_name
+  }
+  scaling_config {
+    desired_size = 2
+    max_size     = 4
+    min_size     = 2
+  }
+  depends_on = [
+    aws_iam_role_policy_attachment.workers_autoscaling,
+    aws_iam_role_policy_attachment.my-cluster-node-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.my-cluster-node-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.my-cluster-node-AmazonEC2ContainerRegistryReadOnly,
+  ]
+}
+```
+
+#### **4. Configure Outputs**
+Edit `outputs.tf`:
+
+```bash
+nano outputs.tf
+```
+
+**Functions:**
+- **Generate ConfigMap:** Provides a ConfigMap for AWS authentication with Kubernetes.
+- **Generate kubeconfig:** Outputs a kubeconfig file for connecting to the EKS cluster.
+
+```hcl
+# Outputs
+locals {
+  config_map_aws_auth = <<CONFIGMAPAWSAUTH
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system
+data:
+  mapRoles: |
+    - rolearn: ${aws_iam_role.my-cluster-node.arn}
+      username: system:node:{{EC2PrivateDNSName}}
+      groups:
+        - system:bootstrappers
+        - system:nodes
+CONFIGMAPAWSAUTH
+
+  kubeconfig = <<KUBECONFIG
+apiVersion: v1
+clusters:
+- cluster:
+    server: ${aws_eks_cluster.my-cluster.endpoint}
+    certificate-authority-data: ${aws_eks_cluster.my-cluster.certificate_authority.0.data}
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: aws
+  name: aws
+current-context: aws
+kind: Config
+preferences: {}
+users:
+- name: aws
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1beta1
+      command: aws-iam-authenticator
+      args:
+        - "token"
+        - "-i"
+        - "${var.cluster-name}"
+KUBECONFIG
+}
+
+output "config_map_aws_auth" {
+  value = local.config
+
+_map_aws_auth
+}
+
+output "kubeconfig" {
+  value = local.kubeconfig
+}
+```
+
+#### **5. Configure Provider**
+Edit `providers.tf`:
+
+```bash
+nano providers.tf
+```
+
+**Functions:**
+- **AWS Provider:** Specifies the AWS region and sets up necessary data sources.
+
+```hcl
+# Provider Configuration
+provider "aws" {
+  region  = "us-east-1"
+}
+
+data "aws_region" "current" {}
+
+data "aws_availability_zones" "available" {}
+```
+
+#### **6. Configure Variables**
+Edit `variables.tf`:
+
+```bash
+nano variables.tf
+```
+
+**Functions:**
+- **Define Variables:** Sets up configurable variables for cluster name, eks version, key pair, and instance type.
+
+```hcl
+# Variables Configuration
+variable "cluster-name" {
+  default = "my-cluster"
+  type    = string
+}
+
+variable "eks_version" {
+  default = "1.30"
+  type    = string
+}
+
+variable "key_pair_name" {
+  default = "mycloud"
+}
+
+variable "eks_node_instance_type" {
+  default = "t2.medium"
+}
+```
+
+#### **7. Configure VPC Resources**
+Edit `vpc.tf`:
+
+```bash
+nano vpc.tf
+```
+
+**Functions:**
+- **Create VPC:** Defines the VPC for the EKS cluster.
+- **Create Subnets:** Sets up public subnets in the VPC.
+- **Create Internet Gateway:** Allows internet access for the VPC.
+- **Create Route Table:** Routes traffic from subnets to the internet.
+- **Associate Route Table:** Links route table with subnets.
+
+```hcl
+# VPC Resources
+resource "aws_vpc" "my-vpc" {
+  cidr_block = "10.0.0.0/16"
+  tags = tomap({
+    "Name" = "my-eks-node",
+    "kubernetes.io/cluster/${var.cluster-name}" = "shared",
+  })
+}
+
+resource "aws_subnet" "my-vpc" {
+  count = 2
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
+  cidr_block              = "10.0.${count.index}.0/24"
+  map_public_ip_on_launch = true
+  vpc_id                  = aws_vpc.my-vpc.id
+  tags = tomap({
+    "Name" = "my-eks-node",
+    "kubernetes.io/cluster/${var.cluster-name}" = "shared",
+  })
+}
+
+resource "aws_internet_gateway" "my-vpc" {
+  vpc_id = aws_vpc.my-vpc.id
+  tags = { Name = "my-vpc" }
+}
+
+resource "aws_route_table" "my-vpc" {
+  vpc_id = aws_vpc.my-vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.my-vpc.id
+  }
+}
+
+resource "aws_route_table_association" "my-vpc" {
+  count = 2
+  subnet_id      = aws_subnet.my-vpc.*.id[count.index]
+  route_table_id = aws_route_table.my-vpc.id
+}
+```
+
+#### **8. Configure Workstation External IP**
+Edit `workstation-external-ip.tf`:
+
+```bash
+nano workstation-external-ip.tf
+```
+
+**Functions:**
+- **Fetch External IP:** Retrieves the external IP of your local workstation for configuring inbound access.
+
+```hcl
+# Workstation External IP
+data "http" "workstation-external-ip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
+locals {
+  workstation-external-cidr = "${chomp(data.http.workstation-external-ip.response_body)}/32"
+}
+```
+
+## Final Steps to Deploy Your AWS Kubernetes Cluster with Terraform
+
+After setting up your Terraform configuration files, it is time to deploy and manage your AWS Kubernetes cluster effectively.
+
+### **1. Initialize Terraform Modules**
+
+This will download the necessary provider plugins and prepare your working directory for further operations.
+
+**Command:**
+
+```bash
+terraform init
+```
+
+### **2. Create Clusters and Resources**
+
+With Terraform initialized, you can now create the execution plan and apply the configuration to set up your Kubernetes cluster and related resources.
+
+- **Create an Execution Plan**
+
+  Run the following command to generate a plan for applying your configuration. This plan will show you the changes Terraform will make.
+
+  **Command:**
+
+  ```bash
+  terraform plan
   ```
-  - **worker-node.tf**: Configure IAM role, EKS node group with instance types, subnets, scaling parameters, and SSH access.
 
-  - **variables.tf**: Define input variables for EKS cluster deployment:
-    - `cluster-name`: "pjct-cluster"
-    - `eks_version`: "1.30"
-    - `key_pair_name`: "project-key"
-    - `eks_node_instance_type`: "t2.medium"
-  ```hcl
-  variable "cluster-name" {
-    default = "pjct-cluster"
-    type    = string
-  }
-  variable "eks_version" {
-    default = "1.30"
-    type    = string
-  }
-  variable "key_pair_name" {
-    default = "project-key"
-  }
-  variable "eks_node_instance_type" {
-    default = "t2.medium"
-  }
+- **Apply the Configuration**
+
+  Once you're satisfied with the execution plan, apply the configuration to create the resources. The `-auto-approve` flag automatically approves all changes without prompting for confirmation.
+
+  **Command:**
+
+  ```bash
+  terraform apply -auto-approve
   ```
-  - **cluster.tf**: Set up AWS EKS cluster with necessary IAM roles, security groups, and the cluster itself.
 
-  - **vpc.tf**: Create VPC with public and private subnets across three availability zones, configure internet and NAT gateways, and set up route tables.
+### **3. Update Kubeconfig**
 
+To interact with your newly created EKS cluster, you need to update your kubeconfig file. This allows `kubectl` to communicate with your Kubernetes cluster.
 
-- **Step 3: Initialize Terraform Modules**
-  - Clone the repository, navigate to `terraform-eks-seun`, and run `terraform init`.
+**Command:**
 
-- **Step 4: Create Clusters and Resources**
-  - Run `terraform plan` to create an execution plan.
-  - Run `terraform apply -auto-approve` to apply the changes.
+```bash
+aws eks update-kubeconfig --region <aws region> --name <cluster-name>
 
-- **Step 5: Update Kubeconfig**
-  - Run `aws eks update-kubeconfig --region ca-central-1 --name pjct-cluster` to update the kubeconfig file.
+aws eks update-kubeconfig --region us-east-1 --name my-cluster
+```
 
-- **Step 6: Confirm Cluster and Nodes**
-  - Run `aws eks list-clusters` to list EKS clusters.
-  - Run `kubectl get nodes -o wide` to get node details.
+Replace `aws region` with your AWS region and `cluster-name` with your cluster name if they differ.
+
+### **4. Confirm Cluster and Nodes**
+
+Finally, verify that your EKS cluster and worker nodes are up and running:
+
+- **List EKS Clusters**
+
+  Use this command to list all EKS clusters in your account, confirming that your cluster was created successfully.
+
+  **Command:**
+
+  ```bash
+  aws eks list-clusters
+  ```
+
+- **Get Node Details**
+
+  Check the status and details of the nodes in your cluster using `kubectl`. This command provides information about the nodes' health and configuration.
+
+  **Command:**
+
+  ```bash
+  kubectl get nodes -o wide
+  ```
 
 ## Define Kubernetes Manifests
 
