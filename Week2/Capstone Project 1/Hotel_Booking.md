@@ -8,8 +8,6 @@ Let's walk through the process of deploying a hotel booking application from sta
 
   <img width="706" alt="Screenshot 2024-08-19 205107" src="https://github.com/user-attachments/assets/6b80385a-038c-4f70-9ce8-f726db047693">
 
-[GitHub Repository](https://github.com/balogsun/hotel-booking.git)
-
 **The microservice architecture of this application includes:**
 
 - **User Service**: Manages user registration, authentication, and profiles.
