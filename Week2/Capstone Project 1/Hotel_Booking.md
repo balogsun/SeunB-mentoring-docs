@@ -1154,6 +1154,7 @@ To verify that your deployment is successful and accessible, use the following c
 ```bash
 kubectl get svc
 ```
+Enter the load balancer URL into your browser to view the webpage of the app.
 
 <img width="357" alt="image" src="https://github.com/user-attachments/assets/0785c451-df23-41dc-96ea-d1ed24fa54bd">
 
