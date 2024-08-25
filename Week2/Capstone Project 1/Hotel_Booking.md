@@ -1177,13 +1177,15 @@ You can make further changes, for instance, in the `src/routes/home/Home.jsx` fi
 
 ### Review Scan Results
 
-The Trivy scan results are available at the following repository download URL: [Scan Results](https://github.com/balogsun/hotel-booking/actions/runs/9589669410/artifacts/1618838601)
+The pipeline logs you will find the URL where the Trivy scan results are located for download:
 
 ![Trivy Scan Results](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/bf2c3f37-f789-4e78-8867-6ced99b95b97)
 
 ### CodeQL Scan Results
 
-The CodeQL analysis scanned 20 out of 20 JavaScript files. Check the status page for overall coverage information: [CodeQL Scan Result](https://github.com/balogsun/hotel-booking/security/code-scanning/tools/CodeQL/status/)
+This result can be found in your repository by clicking `security` , `tools`, `codeQL`. The CodeQL analysis here scanned 20 out of 20 JavaScript files. 
+
+<img width="782" alt="image" src="https://github.com/user-attachments/assets/519c5f20-d02b-4deb-a1d8-d78b807ab54a">
 
 ![CodeQL Scan Coverage](https://github.com/Makinates/SeunB-tasks-docs/assets/125329091/91a44d8e-256f-4ce7-b8d0-dbedd83b1ad9)
 
