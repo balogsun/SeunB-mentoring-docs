@@ -71,7 +71,120 @@ CMD ["npm", "start"]
 - **Exposing Port**: Exposes port 3000, which the Next.js app listens on.
 - **Starting the Application**: Defines the default command to start the Next.js app using `npm start`.
 
-### Kubernetes Cluster Setup
+## Building, Testing, and Pushing Your Docker Image
+
+With your Dockerfile ready, you can now build, test, and push your Docker image to a container repository. 
+
+### Install Docker
+
+To get started with Docker on an Ubuntu system, follow these steps:
+
+#### Set Up Docker's APT Repository
+
+1. **Add Docker's Official GPG Key**:
+   
+   ```bash
+   sudo apt-get update
+   sudo apt-get install ca-certificates curl
+   sudo install -m 0755 -d /etc/apt/keyrings
+   sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+   sudo chmod a+r /etc/apt/keyrings/docker.asc
+   ```
+
+2. **Add the Repository to APT Sources**:
+   
+   ```bash
+   echo \
+     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+     $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   sudo apt-get update
+   ```
+
+   **Note**: For Ubuntu derivatives like Linux Mint, you might need to use `UBUNTU_CODENAME` instead of `VERSION_CODENAME`.
+
+#### Install Docker Packages
+
+To install Docker, run:
+
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+Alternatively, follow [Docker’s installation guide](https://docs.docker.com/engine/install/ubuntu/) for more details.
+
+### Build the Docker Image
+
+First, clone the repository containing your Dockerfile:
+
+```bash
+git clone https://github.com/balogsun/hotel-booking.git
+cd hotel-booking
+```
+
+Build your Docker image with:
+
+```bash
+docker build -t hotel-app:v1 .
+```
+
+This command creates an image named `hotel-app` with the tag `v1` based on your Dockerfile.
+
+### 3. Test the Docker Image
+
+To ensure that your Docker image functions correctly, run it using:
+
+```bash
+docker run -p 3000:3000 hotel-app:v1
+```
+
+Visit `http://localhost:3000` in your browser to see your application in action.
+
+### 4. Pushing the Image to a Container Repository
+
+To make your Docker image accessible globally, push it to a container repository. Follow these steps for Docker Hub:
+
+#### Create a Docker Hub Account
+
+If you don’t already have a Docker Hub account, [sign up here](https://hub.docker.com/).
+
+#### Log In to Docker Hub
+
+Authenticate with Docker Hub using:
+
+```bash
+docker login
+```
+
+Enter your Docker Hub credentials when prompted.
+
+#### Tag the Docker Image
+
+Tag your Docker image with your Docker Hub repository:
+
+```bash
+docker tag hotel-app:v1 your-dockerhub-username/hotel-app:v1
+```
+
+#### Push the Docker Image
+
+Upload the tagged image to Docker Hub:
+
+```bash
+docker push your-dockerhub-username/hotel-app:v1
+```
+
+Your Docker image is now stored on Docker Hub and can be accessed from anywhere.
+
+### 5. Clean Up Local Images
+
+To free up space on your local machine, delete the Docker image with:
+
+```bash
+docker rmi hotel-app:v1
+```
+
+## Kubernetes Cluster Setup
 Setting up a Kubernetes cluster can be a complex process, but with the right tools and instructions, you can simplify the process significantly. Below is a comprehensive guide to getting your Kubernetes cluster up and running on a Linux environment, specifically Ubuntu.
 
 #### Prerequisites:
@@ -657,7 +770,14 @@ Finally, verify that your EKS cluster and worker nodes are up and running:
   kubectl get nodes -o wide
   ```
 
-## Define Kubernetes Manifests
+
+## Deploying Your Application: Defining Kubernetes Manifests
+
+With your AWS EKS cluster up and running, the next step is to define Kubernetes manifests for deploying and exposing your application. Below is the configuration to deploy your application.
+
+### Kubernetes YAML Manifest
+
+Create a file named `hotel-manifest.yaml` and include the following content:
 
 ```yaml
 apiVersion: apps/v1
@@ -676,7 +796,7 @@ spec:
     spec:
       containers:
       - name: hotel
-        image: balogsen/hotel:latest
+        image: <dockerhubusername>/hotel-app:v1
         ports:
         - containerPort: 3000  # Port your application listens on
 ---
@@ -696,17 +816,39 @@ spec:
 
 ### Kubernetes YAML Explanation
 
-- **Deployment**: Defines a Deployment for the hotel service with 2 replicas for high availability.
-  - **Selectors and Labels**: Matches labels to identify the pods managed by the deployment.
-  - **Containers**: Specifies the container image (`balogsen/hotel:latest`) and the port it listens on (3000).
-- **Service**: Defines a Service to expose the hotel application.
-  - **Selector**: Matches the app label to route traffic to the appropriate pods.
-  - **Ports**: Maps external port 80 to internal port 3000.
-  - **Type**: Uses a LoadBalancer to expose the service externally.
+- **Deployment**: Manages the deployment of your application.
+  - **Replicas**: Ensures high availability by running 2 instances of the application.
+  - **Selectors and Labels**: Used to match the pods that the deployment manages.
+  - **Containers**: Specifies the container image (`<dockerhubusername>/hotel-app:v1`) and the port (3000) that the application listens on.
 
-## Set up monitoring and logging using Prometheus, Grafana
+- **Service**: Exposes your application to external traffic.
+  - **Selector**: Routes traffic to pods with the label `app: hotel`.
+  - **Ports**: Maps the external port 80 to the internal port 3000.
+  - **Type**: `LoadBalancer` provisions a load balancer to expose the service to the internet.
 
-### Helm Chart Installations:
+### Applying the Manifests
+
+To deploy the application, execute the following command:
+
+```bash
+kubectl apply -f hotel-manifest.yaml
+```
+
+After applying the manifests, check the status of your services using:
+
+```bash
+kubectl get svc
+```
+
+Look for the `LoadBalancer` type service to find the external URL where your application is accessible. Use this URL to interact with your hotel booking service through your browser.
+
+## Set Up Monitoring and visualization with Prometheus and Grafana
+
+Monitoring and logging are crucial for maintaining the health of your Kubernetes clusters. This guide will walk you through installing and configuring Prometheus and Grafana using Helm charts.
+
+### Helm Chart Installations
+
+First, you need to install Helm on your system:
 
 ```bash
 curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
@@ -718,104 +860,130 @@ sudo apt-get install helm
 
 ### Add Helm Repositories
 
-### Add the Helm Stable Charts for your local client:
+Add the Helm repositories necessary for Prometheus and Grafana:
+
+#### Add the Helm Stable Charts Repository
+
 ```bash
 helm repo add stable https://charts.helm.sh/stable
 ```
 
-### Add Prometheus Helm repo:
+#### Add the Prometheus Helm Repository
+
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 ```
 
+Verify the added repositories:
+
 ```bash
 helm repo ls
+```
 <img width="530" alt="image" src="https://github.com/user-attachments/assets/286962f9-e0ad-40fb-b41a-88a2bd4c9ef4">
 
+Update your Helm repositories:
+
+```bash
 helm repo update
 ```
 
 ### Create Prometheus Namespace
+
+Create a namespace for Prometheus:
+
 ```bash
 kubectl create namespace prometheus
 ```
 
-### Install Prometheus/kube-prometheus-stack
+### Install Prometheus and the kube-prometheus-stack
+
+Install Prometheus and the kube-prometheus-stack using Helm:
+
 ```bash
 helm install stable prometheus-community/kube-prometheus-stack -n prometheus
 ```
 <img width="611" alt="image" src="https://github.com/user-attachments/assets/0a831ae1-f389-41a3-9cee-7a873303ee89">
 
 ### Check Installation Status
+
+Verify the installation by checking the pods in the `prometheus` namespace:
+
 ```bash
 kubectl get pods -n prometheus
 ```
 <img width="611" alt="image" src="https://github.com/user-attachments/assets/6d986a88-2f09-42be-992c-89a629a56550">
 
+Check the services to ensure both Prometheus and Grafana are running:
 
 ```bash
-kubectl get svc -n prometheus # you should see both prometheus and grafana services here
+kubectl get svc -n prometheus
 ```
 <img width="614" alt="image" src="https://github.com/user-attachments/assets/0d4719aa-f210-4b5e-958c-bcf4ced56bf0">
 
-
 ### Expose Prometheus for External Access
+
+To access Prometheus externally, edit the service type from `ClusterIP` to `LoadBalancer`:
+
 ```bash
 kubectl edit svc stable-kube-prometheus-sta-prometheus -n prometheus
 ```
-Change the service type from `ClusterIP` to `LoadBalancer`. Save the file.
 
-### Configuration example:
+Update the configuration:
+
 ```yaml
 selector:
   app.kubernetes.io/name: prometheus
   operator.prometheus.io/name: stable-kube-prometheus-sta-prometheus
 sessionAffinity: None
-type: ClusterIP
+type: LoadBalancer
 ```
 
-Access the GUI with the load balancer URL.
+Access Prometheus using the LoadBalancer URL.
 
 ### Provision Grafana
-Edit/change the `stable-Grafana` service from `ClusterIP` to `LoadBalancer`
+
+Similarly, expose Grafana externally by changing the service type:
+
 ```bash
 kubectl edit svc stable-grafana -n prometheus
 ```
 
-### Configuration example:
+Update the configuration:
+
 ```yaml
 selector:
   app.kubernetes.io/instance: stable
   app.kubernetes.io/name: grafana
 sessionAffinity: None
-type: ClusterIP
+type: LoadBalancer
 ```
+
+Check the services again to observe the changes:
 
 ```bash
 kubectl get svc -n prometheus
 ```
-Observe the output change, adding the load balancer URL.
 <img width="959" alt="image" src="https://github.com/user-attachments/assets/88743afb-b856-410b-a8f4-13498022a7f8">
 
-
 ### Access Grafana GUI
-Access the Grafana GUI with the load balancer URL and login to Grafana:
 
-### Credentials:
-- username: admin
-- password: prom-operator
+Access Grafana using the LoadBalancer URL. Log in with the following credentials:
+
+- **Username**: admin
+- **Password**: prom-operator
 
 ### Visualize Metrics
-To visualize metrics, add a data source:
 
-1. Click **Add data source** and select Prometheus.
-2. OR open the 3-line menu icon, select **Connections**, then **Data sources**.
+To visualize metrics in Grafana:
 
-The data source "prometheus" is already added by default.
+1. **Add Data Source**: Click **Add data source** and select Prometheus. Alternatively, open the menu, select **Connections**, then **Data sources**.
+   
+   The data source "prometheus" is already added by default.
 
-Open the dashboard panel to see the default available dashboards and click on the one that suits the visualization of the cluster environment.
+2. **View Dashboards**: Open the dashboard panel to see available dashboards. Click on a dashboard that suits your monitoring needs.
 
-This will show a monitoring dashboard for all cluster nodes.
+This will display monitoring metrics for your cluster nodes.
+
 <img width="683" alt="image" src="https://github.com/user-attachments/assets/995665f9-6e60-4d2c-9f0f-1bb2b019b4f6">
 
 <img width="734" alt="image" src="https://github.com/user-attachments/assets/13265223-f111-48ea-b23c-7bf33b20e5d6">
@@ -823,6 +991,7 @@ This will show a monitoring dashboard for all cluster nodes.
 <img width="728" alt="image" src="https://github.com/user-attachments/assets/faa0f2e1-270d-4d5c-84d1-82d116f3524f">
 
 <img width="724" alt="image" src="https://github.com/user-attachments/assets/b4e2ef24-ace6-43d6-bf85-f59d8f0d3d20">
+
 
 
 ## Implement CI/CD Pipelines for Automated Builds, Testing, and Deployments
