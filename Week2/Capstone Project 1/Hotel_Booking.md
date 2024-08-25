@@ -994,9 +994,36 @@ This will display monitoring metrics for your cluster nodes.
 
 
 
-## Implement CI/CD Pipelines for Automated Builds, Testing, and Deployments
+## Implementing CI/CD Pipelines with GitHub Actions to automate Docker Build, Security Checks, and Application Deployment
 
-Below is the Github Workflow to automate the deployment.
+Automating your CI/CD pipeline ensures that your application is consistently built, tested, and deployed with minimal manual intervention.
+
+### Configure GitHub Repository Settings
+
+1. **Enable GitHub Actions:**
+
+   - Navigate to your GitHub repository.
+   - Go to **Settings**.
+   - Click on **Actions** in the left sidebar.
+   - Under **General**, check the box for `Allow all actions and reusable workflows`.
+
+   ![Enable GitHub Actions](https://github.com/user-attachments/assets/enable-actions.png)
+
+2. **Add Repository Secrets:**
+
+   - Go to **Settings** > **Secrets and variables** > **Actions**.
+   - Click **New repository secret**.
+   - Add your credentials for `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `DOCKERHUB_PASSWORD`, and `DOCKERHUB_USERNAME`.
+
+   ![Add Secrets](https://github.com/user-attachments/assets/add-secrets.png)
+
+### Create GitHub Workflow File
+
+Ensure the following path exists in your cloned GitHub repository. If not, create it:
+
+`.github/workflows/hotel-workflow.yml`
+
+Below is the GitHub Actions workflow I configured to automate the Docker build, security checks, and deployment:
 
 ```yaml
 name: Hotel Pipeline
@@ -1008,7 +1035,7 @@ on:
 
 jobs:
   codeql-analysis:
-    name: Build-CodeQL-and-deploy hotel
+    name: Build, Scan, and Deploy Hotel Application
     runs-on: ${{ matrix.language == 'swift' && 'macos-latest' || 'ubuntu-latest' }}
     timeout-minutes: ${{ matrix.language == 'swift' && 120 || 360 }}
     permissions:
@@ -1057,15 +1084,15 @@ jobs:
 
       - name: Build hotel booking image
         run: |
-          docker build -t balogsen/hotel:latest .
+          docker build -t <dockerhubusername>/hotel:v1 .
 
       - name: Scan Docker image with Trivy
         run: |
-          trivy image -f json -o trivy_report.json balogsen/hotel:latest
+          trivy image -f json -o trivy_report.json <dockerhubusername>/hotel:v1
  
       - name: Convert Trivy JSON to human-readable format
         run: |
-          trivy image -f table balogsen/hotel:latest > trivy_report.txt
+          trivy image -f table <dockerhubusername>/hotel:v1 > trivy_report.txt
  
       - name: Save Trivy scan results as artifact
         uses: actions/upload-artifact@v4
@@ -1075,8 +1102,8 @@ jobs:
 
       - name: Push hotel booking image
         run: |
-         docker push balogsen/hotel:latest
-         docker rmi balogsen/hotel:latest
+         docker push <dockerhubusername>/hotel:v1
+         docker rmi <dockerhubusername>/hotel:v1
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
@@ -1088,40 +1115,44 @@ jobs:
         with:
          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-         aws-region: ca-central-1
+         aws-region: us-east-1
 
       - name: Update kubeconfig for EKS
         run: |
-         aws eks update-kubeconfig --region ca-central-1 --name pjct-cluster
+         aws eks update-kubeconfig --region us-east-1 --name my-cluster
  
       - name: Deploy to EKS
         run: |
          kubectl apply -f K8S/deployment.yml
 ```
 
+   Replace <dockerhubusername> with your actual docker hub user name.
+   Save and commit the yaml.
+   
+   Any other save/commit/push made to any code/file in this repository will now automatically triger GitHub action to run this pipeline.
+   
 ### GitHub Workflow Explanation
 
-- **Trigger**: The workflow triggers on a push to the `main` branch.
-- **Jobs**: Defines a job named `codeql-analysis` that builds, scans, and deploys the hotel application.
-  - **Strategy**: Uses a matrix strategy for different languages
-
- and build modes.
+- **Trigger**: The workflow activates on a push to the `main` branch.
+- **Jobs**: Defines a job named `codeql-analysis` that handles building, scanning, and deploying the hotel application.
+  - **Strategy**: Uses a matrix strategy for different languages and build modes.
 
 - **Steps**:
-  - **Checkout**: Checks out the repository code.
-  - **Initialize CodeQL**: Initializes CodeQL for security analysis.
-  - **Perform CodeQL Analysis**: Analyzes the code using CodeQL.
-  - **Install Trivy**: Installs Trivy for security scanning.
-  - **Docker Login**: Logs in to DockerHub.
+  - **Checkout**: Checks out the code from the repository.
+  - **Initialize CodeQL**: Sets up CodeQL for code security analysis.
+  - **Perform CodeQL Analysis**: Analyzes the code for vulnerabilities.
+  - **Install Trivy**: Installs Trivy for scanning Docker images.
+  - **Docker Login**: Logs in to DockerHub using provided credentials.
   - **Build Docker Image**: Builds the Docker image for the hotel application.
-  - **Scan Docker Image**: Scans the Docker image with Trivy.
-  - **Convert Trivy JSON**: Converts Trivy scan results to a human-readable format.
-  - **Save Trivy Scan Results**: Saves the scan results as an artifact.
-  - **Push Docker Image**: Pushes the Docker image to DockerHub.
-  - **Set up kubectl**: Sets up kubectl for interacting with Kubernetes.
-  - **Configure AWS Credentials**: Configures AWS credentials for EKS access.
-  - **Update kubeconfig**: Updates the kubeconfig for EKS.
-  - **Deploy to EKS**: Deploys the application to EKS using Kubernetes manifests.
+  - **Scan Docker Image**: Scans the Docker image with Trivy and saves the report.
+  - **Convert Trivy JSON**: Converts Trivy scan results to a human-readable format and saves as an artifact.
+  - **Push Docker Image**: Pushes the Docker image to DockerHub and cleans up local images.
+  - **Set up kubectl**: Configures `kubectl` for Kubernetes operations.
+  - **Configure AWS Credentials**: Sets up AWS credentials for accessing EKS.
+  - **Update kubeconfig**: Updates `kubeconfig` for the EKS cluster.
+  - **Deploy to EKS**: Deploys the application to the EKS cluster using Kubernetes manifests.
+
+
 
 ### Check the deployment by accessing the loadbalancer URL that has been created from the `kubectl get svc` command.
 
