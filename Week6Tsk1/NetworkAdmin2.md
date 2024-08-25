@@ -1861,8 +1861,7 @@ Below are the Ansible playbooks for each service:
 
     - name: Save iptables rules
       command: iptables-save > /etc/iptables/rules.v4
-
-#
+```
 
 ### Inventory File
 
