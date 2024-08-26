@@ -1,4 +1,4 @@
-# **A secure End-to-End Deployment of a Microservice Application using Terraform, AWS EKS, GitHub Actions, and Prometheus**
+# **Securely Deploy a Microservice Application with Terraform, AWS Kubernetes, GitHub Actions, Monitor with Prometheus and Grafana**
 
 Let's walk through the process of deploying a hotel booking application from start to finish. This guide will take you through building the Dockerfile, using Terraform to set up a cluster on AWS EKS, and creating a secure CI/CD pipeline with GitHub Actions. Additionally, we'll cover setting up monitoring tools like Prometheus and Grafana to ensure the application's operational efficiency and reliability. By the end of this guide, you should have a clear understanding of how these components integrate to build and maintain a robust, scalable application environment.
 
@@ -771,9 +771,10 @@ Finally, verify that your EKS cluster and worker nodes are up and running:
 
 With your AWS EKS cluster up and running, the next step is to define Kubernetes manifests for deploying and exposing your application. Below is the configuration to deploy your application.
 
-### Kubernetes YAML Manifest
+### Kubernetes Manifest
 
 Create a file named `hotel-manifest.yaml` and include the following content:
+- the manifest is located in the repo at `hotel-booking/K8S/deployment.yml`
 
 ```yaml
 apiVersion: apps/v1
@@ -891,7 +892,7 @@ Create a namespace for Prometheus:
 kubectl create namespace prometheus
 ```
 
-### Install Prometheus and the kube-prometheus-stack
+### Install Prometheus 
 
 Install Prometheus and the kube-prometheus-stack using Helm:
 
