@@ -1,5 +1,5 @@
 
-## **Boosting System Resilience with Monitoring and Self-Healing: A Comprehensive Guide**
+## **Self-Healing and Monitoring: A comprehensive guide to revolutionizing System Resilience Through Automation**
 
 In today’s fast-paced digital world, maintaining system reliability and minimizing downtime are critical for business success. This comprehensive guide explores how to enhance system resilience through advanced monitoring and self-healing mechanisms. We will walk you through integrating Datadog for monitoring, setting up automated recovery scripts, and leveraging Node.js and webhooks to create a reliable self-healing system (with a focus on disk management). By the end of this guide, you'll have a fully automated setup that can proactively manage system issues, ensuring smooth and uninterrupted operations.
 
@@ -425,7 +425,7 @@ If you prefer not to use Node.js, you may explore python Flask service, or Datad
        @your_email@domain.com @webhook-Run_Purge_Script
        ```
     
-       Here, your webhook will also be a recipients, by simply typing the `@` key, in the message tab, a list of recipients will pop up for you to select.
+       Here, your webhook will also be a recipient, by simply typing the `@` key, in the message tab, a list of recipients will pop up for you to select.
 
        <img width="707" alt="image" src="https://github.com/user-attachments/assets/fa0aa0e6-7fc8-497f-b656-e1409255b5a0">
 
