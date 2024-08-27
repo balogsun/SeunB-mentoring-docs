@@ -315,7 +315,7 @@ If you prefer not to use Node.js, you may explore python Flask service, or Datad
 
    - The service will be actively listening for incoming HTTP POST requests on port 6060. When Datadog triggers the webhook, it will send an HTTP or HTTPS POST request to this specific URL. This request will prompt the execution of the purge script.
 
-3. **Make the Listener Persistent with PM2** (the service will continously run in background):
+3. **Make the Listener Persistent with PM2** (the service will continuously run in background):
    - Install PM2:
      ```bash
      sudo npm install -g pm2
@@ -349,7 +349,7 @@ If you prefer not to use Node.js, you may explore python Flask service, or Datad
 
    If everything is set up correctly, the Node.js script should execute `/tmp/purge_demo.sh` and return a confirmation message.
 
-### **5. [Optional] Expose the Local Server with a VPN Tunnel**, Just in case it is not a linux cloud instance, it will need a temporary internet access through a vpn tunnel.
+### **5. [Optional] Expose the Local Server with a VPN Tunnel**, Just in case it is not a Linux cloud instance, it will need a temporary internet access through a vpn tunnel.
 
 1. **Install Localtunnel**:
    - Install Localtunnel:
@@ -379,7 +379,7 @@ If you prefer not to use Node.js, you may explore python Flask service, or Datad
    - Log in to Datadog and navigate to **Integrations** > Search for **Webhooks**.
    - Click **New Webhook** and configure it:
      - **Name**: `Run_Purge_Script`
-     - **URL**: `https://trigger-xxxxx.loca.lt/purge` #for tunnel url
+     - **URL**: `https://trigger-xxxxx.loca.lt/purge` #for tunnel URL
      - OR
      - **URL**: `https://server_domainIP/purge` #for cloud instance
      - **Additional Options**: Set as needed. [optional]
@@ -404,7 +404,7 @@ If you prefer not to use Node.js, you may explore python Flask service, or Datad
      - Hover your mouse on the host and click on `view host dashboard`
        <img width="519" alt="image" src="https://github.com/user-attachments/assets/dad3b193-3d29-4384-bba8-06645c2f8f48">
      - A graphic display of some metrics you can monitor will be shown here.
-     - Click on the metrics you want to monitor (e.g `disk usage by device`), click **Create Monitor**.
+     - Click on the metrics you want to monitor (e.g. `disk usage by device`), click **Create Monitor**.
     
       <img width="529" alt="image" src="https://github.com/user-attachments/assets/69d31ae7-ff16-45de-9d18-8c1698580713">
 
@@ -425,14 +425,14 @@ If you prefer not to use Node.js, you may explore python Flask service, or Datad
        @your_email@domain.com @webhook-Run_Purge_Script
        ```
     
-       Here, your webhook will also be a receipient, by simply typing the `@` key, in the message tab, a list of receipients will pop up for you to select.
+       Here, your webhook will also be a recipients, by simply typing the `@` key, in the message tab, a list of recipients will pop up for you to select.
 
        <img width="707" alt="image" src="https://github.com/user-attachments/assets/fa0aa0e6-7fc8-497f-b656-e1409255b5a0">
 
    - **Save and Activate the Monitor**:
      - Click **Save** to activate the monitor.
     
-   - Navitage to `monitor section` to see a list of your configured monitors.
+   - Navigate to `monitor section` to see a list of your configured monitors.
 
        <img width="793" alt="image" src="https://github.com/user-attachments/assets/5b7d66fc-069a-4f23-8b94-11c2560e9893">
 
@@ -451,7 +451,7 @@ If you prefer not to use Node.js, you may explore python Flask service, or Datad
      ```bash
      while true; do date && ls -l && pwd && du -ms; sleep 2; done
      ```
-     - This command shows me the real time date, lsit of files, size of files and current working directory of `/demo` partition.
+     - This command shows me the real time date, list of files, size of files and current working directory of `/demo` partition.
     
        <img width="434" alt="image" src="https://github.com/user-attachments/assets/0a1ecfd5-8e53-44aa-b48d-2a54da009489">
 
