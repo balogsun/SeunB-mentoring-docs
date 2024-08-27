@@ -1,7 +1,7 @@
 
 ## **Boosting System Resilience with Monitoring and Self-Healing: A Comprehensive Guide**
 
-In today’s fast-paced digital world, maintaining system reliability and minimizing downtime are critical for business success. This comprehensive guide explores how to enhance system resilience through advanced monitoring and self-healing mechanisms. We will walk you through integrating Datadog for monitoring, setting up automated recovery scripts, and leveraging Node.js and webhooks to create a robust self-healing system (with a focus on disk management). By the end of this guide, you'll have a fully automated setup that can proactively manage system issues, ensuring smooth and uninterrupted operations.
+In today’s fast-paced digital world, maintaining system reliability and minimizing downtime are critical for business success. This comprehensive guide explores how to enhance system resilience through advanced monitoring and self-healing mechanisms. We will walk you through integrating Datadog for monitoring, setting up automated recovery scripts, and leveraging Node.js and webhooks to create a reliable self-healing system (with a focus on disk management). By the end of this guide, you'll have a fully automated setup that can proactively manage system issues, ensuring smooth and uninterrupted operations.
 
 
 ### **Prerequisites**
