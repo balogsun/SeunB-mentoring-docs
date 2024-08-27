@@ -213,7 +213,7 @@ An alert will be triggered when the disk capacity reaches a determined threshold
 ### **4. Set Up the Webhook HTTPS Listener Using Node.js**
 If you prefer not to use Node.js, you may explore python Flask service, or Datadog’s serverless functions (if using a cloud provider like AWS) to trigger the script directly via AWS Lambda or an equivalent service, but the below method gives direct control on the infrastructure.
 
-**First create the script, that would be triggered by Datadog’s Webhook Integration that clears/move log files in `/demo` directory.
+**First create the script, that would be triggered by Datadog’s Webhook Integration that clears/move log files in `/demo` directory**.
 
   **Example script (`purge_demo.sh`)**:
   
