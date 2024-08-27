@@ -1,7 +1,7 @@
 
 ## **Boosting System Resilience with Monitoring and Self-Healing: A Comprehensive Guide**
 
-In today’s fast-paced digital world, maintaining system reliability and minimizing downtime are critical for business success. This comprehensive guide explores how to enhance system resilience through advanced monitoring and self-healing mechanisms. We will walk you through integrating Datadog for monitoring, setting up automated recovery scripts, and leveraging Node.js and webhooks to create a robust self-healing system. By the end of this guide, you'll have a fully automated setup that can proactively manage system issues, ensuring smooth and uninterrupted operations.
+In today’s fast-paced digital world, maintaining system reliability and minimizing downtime are critical for business success. This comprehensive guide explores how to enhance system resilience through advanced monitoring and self-healing mechanisms. We will walk you through integrating Datadog for monitoring, setting up automated recovery scripts, and leveraging Node.js and webhooks to create a robust self-healing system (with a focus on disk management). By the end of this guide, you'll have a fully automated setup that can proactively manage system issues, ensuring smooth and uninterrupted operations.
 
 
 ### **Prerequisites**
@@ -211,6 +211,8 @@ An alert will be triggered when the disk capacity reaches a determined threshold
      ```
 
 ### **4. Set Up the Webhook HTTPS Listener Using Node.js**
+If you prefer not to use Node.js, you may explore python Flask service, or Datadog’s serverless functions (if using a cloud provider like AWS) to trigger the script directly via AWS Lambda or an equivalent service, but the below method gives direct control on the infrastructure.
+
 **First create the script, that would be triggered by Datadog’s Webhook Integration that clears/move log files in `/demo` directory.
 
   **Example script (`purge_demo.sh`)**:
@@ -313,7 +315,7 @@ An alert will be triggered when the disk capacity reaches a determined threshold
 
    - The service will be actively listening for incoming HTTP POST requests on port 6060. When Datadog triggers the webhook, it will send an HTTP or HTTPS POST request to this specific URL. This request will prompt the execution of the purge script.
 
-3. **Make the Listener Persistent with PM2**:
+3. **Make the Listener Persistent with PM2** (the service will continously run in background):
    - Install PM2:
      ```bash
      sudo npm install -g pm2
@@ -328,6 +330,9 @@ An alert will be triggered when the disk capacity reaches a determined threshold
      pm2 stop webhook_listener.js
      pm2 restart webhook_listener.js
      ```
+
+     <img width="478" alt="image" src="https://github.com/user-attachments/assets/1b862e50-8224-4f86-aeb8-3b23e65352e5">
+
 	 
 ### **Step 4: Test the Webhook Listener**
 
@@ -336,16 +341,17 @@ An alert will be triggered when the disk capacity reaches a determined threshold
    You can use `curl` to simulate a POST request to your webhook:
 
    ```bash
-   curl -X POST http://localhost:8080/purge
+   curl -X POST http://localhost:6060/purge
    ```
+
+   <img width="390" alt="image" src="https://github.com/user-attachments/assets/6d7e4276-64b9-4d59-b893-3b091da55fe0">
+
 
    If everything is set up correctly, the Node.js script should execute `/tmp/purge_demo.sh` and return a confirmation message.
 
-### **5. [Optional] Expose the Local Server with a VPN Tunnel**
+### **5. [Optional] Expose the Local Server with a VPN Tunnel**, Just in case it is not a linux cloud instance, it will need a temporary internet access through a vpn tunnel.
 
-1.
-
- **Install Localtunnel**:
+1. **Install Localtunnel**:
    - Install Localtunnel:
      ```bash
      sudo npm install -g localtunnel
@@ -372,21 +378,44 @@ An alert will be triggered when the disk capacity reaches a determined threshold
 1. **Create a Webhook in Datadog**:
    - Log in to Datadog and navigate to **Integrations** > Search for **Webhooks**.
    - Click **New Webhook** and configure it:
-     - **Name**: `Purge Webhook`
-     - **URL**: `https://trigger-xxxxx.loca.lt/purge`
+     - **Name**: `Run_Purge_Script`
+     - **URL**: `https://trigger-xxxxx.loca.lt/purge` #for tunnel url
+     - OR
+     - **URL**: `https://server_domainIP/purge` #for cloud instance
      - **Additional Options**: Set as needed. [optional]
    - Click **Save**.
+  
+     <img width="768" alt="image" src="https://github.com/user-attachments/assets/b74dde66-c30d-435e-ad65-4fd78c23623c">
 
-2. **Set Up a Datadog Monitor to Trigger the Webhook**:
+
+     <img width="730" alt="image" src="https://github.com/user-attachments/assets/24ea75c5-008c-4cc1-86fe-963d3c425d13">
+
+
+2. **Test that datadog can send a POST test request and Set Up a Datadog Monitor to Trigger the Webhook**:
+
+   - On the monitoring page, navigate to `synthetic monitoring and testing` > `New Test`.
+   - Click `New API test`, `HTTP`, `URL: POST`, `https://server_domainIP/purge`, > `send`.
+   - You should get a success response as the screenshot below
+  
+    <img width="633" alt="image" src="https://github.com/user-attachments/assets/fcfcb04d-96ba-4238-ae20-28d04774bc4c">
+
    - Create a Monitor:
-     - Navigate to Infrastructure in Datadog.
-     - Click on the host where the disk is mounted and select **Create Monitor**.
+     - Navigate to Infrastructure in Datadog page.
+     - Hover your mouse on the host and click on `view host dashboard`
+       <img width="519" alt="image" src="https://github.com/user-attachments/assets/dad3b193-3d29-4384-bba8-06645c2f8f48">
+     - A graphic display of some metrics you can monitor will be shown here.
+     - Click on the metrics you want to monitor (e.g `disk usage by device`), click **Create Monitor**.
+    
+      <img width="529" alt="image" src="https://github.com/user-attachments/assets/69d31ae7-ff16-45de-9d18-8c1698580713">
 
    - Configure the Monitor:
      - Set the query to trigger an alert when disk usage exceeds 90%:
        ```bash
        max(last_5m):max:system.disk.in_use{device:/dev/mapper/demoVG-demoLV} by {device} > 0.9
        ```
+  
+       <img width="709" alt="image" src="https://github.com/user-attachments/assets/3147f7b7-ee00-4c77-8e42-630c31195322">
+
      - Set the alert message:
        ```vbnet
        Alert: Disk usage on /demo has exceeded 90%. Triggering purge script.
@@ -395,9 +424,18 @@ An alert will be triggered when the disk capacity reaches a determined threshold
        ```less
        @your_email@domain.com @webhook-Run_Purge_Script
        ```
+    
+       Here, your webhook will also be a receipient, by simply typing the `@` key, in the message tab, a list of receipients will pop up for you to select.
+
+       <img width="707" alt="image" src="https://github.com/user-attachments/assets/fa0aa0e6-7fc8-497f-b656-e1409255b5a0">
 
    - **Save and Activate the Monitor**:
      - Click **Save** to activate the monitor.
+    
+   - Navitage to `monitor section` to see a list of your configured monitors.
+
+       <img width="793" alt="image" src="https://github.com/user-attachments/assets/5b7d66fc-069a-4f23-8b94-11c2560e9893">
+
 
 ### **7. Verify the Self-Healing Process**
 
@@ -408,19 +446,38 @@ An alert will be triggered when the disk capacity reaches a determined threshold
      dd if=/dev/zero of=/demo/testfile bs=1M count=1900
      ```
 
-2. **Monitor Disk Usage**:
+2. **Monitor Disk Usage**: (open a new session to the server)
    - Run a continuous loop on your server to monitor the /demo directory:
      ```bash
      while true; do date && ls -l && pwd && du -ms; sleep 2; done
      ```
+     - This command shows me the real time date, lsit of files, size of files and current working directory of `/demo` partition.
+    
+       <img width="434" alt="image" src="https://github.com/user-attachments/assets/0a1ecfd5-8e53-44aa-b48d-2a54da009489">
+
    - Ensure that the disk usage reaches 90% and triggers the Datadog monitor.
 
 3. **Check Webhook Execution**:
    - Verify that the webhook is called and the purge script executes as expected.
-   - An email will be automatically sent about the filled-up disk, and the `/demo` path will be cleaned up.
+     
+     <img width="799" alt="image" src="https://github.com/user-attachments/assets/eba3fa3f-e11a-4dcf-b373-38207e9e908c">
+
+   - An email will be automatically sent about the filled-up disk, and the `/demo` partition will be cleaned up.
+
+     ![Screenshot 2024-08-26 194702](https://github.com/user-attachments/assets/a324020f-d595-4aa7-9b36-83dfc0cbb061)
+
+     You will notice that the time that the email was triggered and the time the disk was full, are the same.
+     Within seconds, the script has been executed and any upcoming disruption would have been averted.
+
    - Check the `/demo` directory to ensure that files are deleted when the threshold is crossed.
+  
+     ![Screenshot 2024-08-26 194210](https://github.com/user-attachments/assets/2003c5ff-7a68-4e8f-8fb2-63b82a563ebf)
+
    - Another email will be received to inform that the alert has been treated and closed.
+  
+     ![Screenshot 2024-08-26 194746](https://github.com/user-attachments/assets/ff522e29-79e2-4f29-97dd-a823dc63f501)
 
----
 
-By following these detailed steps, you'll have a robust self-healing system in place, with Datadog monitoring disk usage and triggering a Node.js webhook to automatically purge files when necessary.
+
+By following these detailed steps, you'll establish a realistic self-healing system. While the script provided focuses on clearing logs, it can be adapted to perform other actions, such as restarting a service, scaling an instance, or any other task. With Datadog monitoring disk usage and triggering a Node.js webhook, the system will automatically execute the necessary script, ensuring responsive and efficient management of your infrastructure.
+Please feel free to leave a like, comment, or ask a question if you need clarity on any of the steps. Happy Learning!
