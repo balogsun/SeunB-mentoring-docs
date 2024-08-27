@@ -6,7 +6,7 @@ In today’s fast-paced digital world, maintaining system reliability and minimi
 
 ### **Prerequisites**
 
-- **A Datadog Account**: Ensure you have an active Datadog account for monitoring and alerts.
+- **A Datadog Account**: Create an active Datadog account for monitoring and alerts.
 - **A Linux Server**: This can be either on-premises or a cloud-based instance.
 - **Internet Access**: Required for installing software, setting up integrations, and accessing Datadog.
 
@@ -25,26 +25,38 @@ Guides to install on your preferred operating system are listed in the `integrat
    - **Obtain Your Datadog API Key**:
      - Navigate to **Organization settings** > **API Keys** to find your API key.
 
+	<img width="684" alt="image" src="https://github.com/user-attachments/assets/dbcdd80d-d48b-4339-86e9-204ba16a7836">
+
+ 	<img width="799" alt="image" src="https://github.com/user-attachments/assets/c26f2caa-9c90-424d-94b9-54cedb6c5557">
+
+
    - **Install the Agent**:
      - Run the following command on your Ubuntu server to install the Datadog Agent:
        ```bash
        DD_API_KEY=8axxxxxxxxxxxxxxxxxxxxxxxxxxxf43 DD_SITE="datadoghq.com" bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
        ```
+
+	<img width="804" alt="image" src="https://github.com/user-attachments/assets/43ed04b5-cda0-400b-8c6c-5044322ba2c4">
+
      - This command sets up the agent and automatically configures it with your API key.
 
-2. **Verify Agent Installation**:
+1. **Verify Agent Installation**:
    - Check the agent status to ensure it is running:
      ```bash
+     systemctl status datadog-agent
      sudo datadog-agent status
      ```
    - You should see output indicating that the agent is running and sending data.
+  
+     <img width="949" alt="image" src="https://github.com/user-attachments/assets/7589f5b1-0761-4ea3-b227-468337853cfe">
+
    
    - To check logs, use:
      ```bash
      tail -f /var/log/datadog/agent.log
      ```
 
-#### **For Ubuntu Server Managing a Kubernetes Cluster:**
+#### **For Ubuntu Server Managing a Kubernetes Cluster with `kubectl` and `helm` already installed:**
 1. **Create a Datadog API Key Secret**:
    - Execute the following command to create a Kubernetes secret containing your Datadog API key:
      ```bash
@@ -54,6 +66,10 @@ Guides to install on your preferred operating system are listed in the `integrat
 2. **Deploy the Datadog Agent in the Cluster**:
    - Add the Datadog Helm repository and update:
      ```bash
+     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+     chmod 700 get_helm.sh
+     ./get_helm.sh
+
      helm repo add datadog https://helm.datadoghq.com
      helm repo update
      ```
@@ -73,16 +89,20 @@ Guides to install on your preferred operating system are listed in the `integrat
      helm install datadog-agent -f datadog-values.yaml datadog/datadog
      ```
 
+     <img width="721" alt="image" src="https://github.com/user-attachments/assets/dcda0e71-4f88-47b6-8efc-98ceebbf8c09">
+
    - Confirm agents are running:
      ```bash
      kubectl get all
      ```
 
+     <img width="766" alt="image" src="https://github.com/user-attachments/assets/c051b027-075f-4815-9875-2e81bb8d93b1">
+     
 ### **3. Prepare a Disk for Monitoring**
 An alert will be triggered when the disk capacity reaches a determined threshold.
 
 1. **Add a New Disk to the Server**:
-   - In your VMware or AWS cloud instance, add a new 2GB disk named `/dev/sdb`.
+   - In your VMware or AWS cloud instance, add a new 2GB disk.
 
 #### **Adding a 2GB Disk in VMware Workstation**
 1. **Open VMware Workstation**:
@@ -90,6 +110,8 @@ An alert will be triggered when the disk capacity reaches a determined threshold
 
 2. **Open VM Settings**:
    - Right-click on the virtual machine and select **Settings**.
+  
+     <img width="559" alt="image" src="https://github.com/user-attachments/assets/4742ad6b-9623-4909-a15c-34da72c78046">
 
 3. **Add a New Disk**:
    - Click **Add** to open the **Add Hardware Wizard**.
@@ -116,6 +138,9 @@ An alert will be triggered when the disk capacity reaches a determined threshold
      - **Size**: Enter **2 GiB**.
      - **Availability Zone**: Select the same availability zone as your EC2 instance.
    - Click **Create Volume**.
+  
+     <img width="608" alt="image" src="https://github.com/user-attachments/assets/993071f4-9505-4357-8259-a74ca1c03c97">
+
 
 4. **Attach the EBS Volume to an EC2 Instance**:
    - Go back to **Volumes**.
@@ -133,14 +158,18 @@ An alert will be triggered when the disk capacity reaches a determined threshold
      ```
      The new disk should be listed as `/dev/xvdf` or similar.
 
+     <img width="300" alt="image" src="https://github.com/user-attachments/assets/b0c66092-c256-40b4-b157-ee9ee0697f1f">
+
 2. **Install LVM**:
+   LVM (Logical Volume Management) is used to manage disk volumes because it offers flexibility, efficiency, and scalability. It allows dynamic resizing of partitions, easy addition and removal of disks, and improved storage utilization through aggregation and thin provisioning. LVM enhances performance with striping, supports snapshots for backups, simplifies administration, and can be combined with mirroring or RAID for high availability, making it an ideal choice for environments with dynamic storage needs.
+   
    - Install LVM tools:
      ```bash
      sudo apt update
      sudo apt install -y lvm2
      ```
 
-3. **Set Up LVM**:
+4. **Set Up LVM**:
    - Create a Physical Volume (PV):
      ```bash
      sudo pvcreate /dev/sdb
@@ -154,7 +183,7 @@ An alert will be triggered when the disk capacity reaches a determined threshold
      sudo lvcreate -n demoLV -l 100%FREE demoVG
      ```
 
-4. **Format and Mount the Logical Volume**:
+5. **Format and Mount the Logical Volume**:
    - Format the LV with ext4 filesystem:
      ```bash
      sudo mkfs.ext4 /dev/demoVG/demoLV
@@ -169,7 +198,9 @@ An alert will be triggered when the disk capacity reaches a determined threshold
      df -h /demo
      ```
 
-5. **Configure Automatic Mounting**:
+     <img width="348" alt="image" src="https://github.com/user-attachments/assets/d637cd74-f4ea-4446-8575-2e269778aa09">
+
+6. **Configure Automatic Mounting**:
    - Add the following entry to `/etc/fstab` for automatic mounting at boot:
      ```bash
      echo '/dev/demoVG/demoLV /demo ext4 defaults 0 2' | sudo tee -a /etc/fstab
@@ -180,6 +211,38 @@ An alert will be triggered when the disk capacity reaches a determined threshold
      ```
 
 ### **4. Set Up the Webhook HTTPS Listener Using Node.js**
+**First create the script, that would be triggered by Datadog’s Webhook Integration that clears/move log files in `/demo` directory.
+
+  **Example script (`purge_demo.sh`)**:
+  
+  ```
+  nano /tmp/purge_demo.sh
+  ```
+  
+  ```bash
+  #!/bin/bash
+  
+  LOGFILE="/tmp/purge_demo.log"
+  
+  echo "Running purge script at $(date)" >> $LOGFILE
+  
+  # Directory to purge
+  TARGET_DIR="/demo"
+  
+  # Check if the directory exists
+  if [ -d "$TARGET_DIR" ]; then
+      echo "Purging all files in $TARGET_DIR..." >> $LOGFILE
+      rm -rf ${TARGET_DIR}/* >> $LOGFILE 2>&1
+      echo "All files in $TARGET_DIR have been purged." >> $LOGFILE
+  else
+      echo "Directory $TARGET_DIR does not exist." >> $LOGFILE
+  fi
+  ```
+  
+  - **Make the Script Executable**:
+    ```bash
+    chmod +x /path/to/purge_demo.sh
+    ```
 
 1. **Install Node.js**:
    - Install the Node.js package repository and Node.js:
@@ -192,6 +255,9 @@ An alert will be triggered when the disk capacity reaches a determined threshold
      node -v
      npm -v
      ```
+
+     <img width="179" alt="image" src="https://github.com/user-attachments/assets/3cedf108-f727-4986-9c60-27decf46f12e">
+
 
 2. **Create a Simple Node.js Webhook Listener**:
    - Create a directory for the webhook listener and navigate to it:
@@ -211,6 +277,9 @@ An alert will be triggered when the disk capacity reaches a determined threshold
      ```bash
      nano webhook_listener.js
      ```
+  
+     <img width="431" alt="image" src="https://github.com/user-attachments/assets/494ce355-c1a1-4a94-92a6-68fdf0f97a8c">
+
      - Add the following code to `webhook_listener.js`:
        ```javascript
        const express = require('express');
@@ -239,7 +308,9 @@ An alert will be triggered when the disk capacity reaches a determined threshold
            console.log(`Webhook listener running at http://localhost:${port}`);
        });
        ```
-       
+
+       <img width="450" alt="image" src="https://github.com/user-attachments/assets/a63ad15f-795c-4f7e-bb92-c6a001abd848">
+
    - The service will be actively listening for incoming HTTP POST requests on port 6060. When Datadog triggers the webhook, it will send an HTTP or HTTPS POST request to this specific URL. This request will prompt the execution of the purge script.
 
 3. **Make the Listener Persistent with PM2**:
