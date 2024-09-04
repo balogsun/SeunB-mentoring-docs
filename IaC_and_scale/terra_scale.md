@@ -1,20 +1,20 @@
 # From Manual to Automated: Optimizing Cloud Infrastructure with Terraform, Load Balancing, and Auto-Scaling
 
-Let's explore the powerful trio of **Terraform**, **load balancing**, and **auto-scaling**, key components for building scalable, efficient, and resilient cloud infrastructure.
+Let's dive into how **Terraform**, **load balancing**, and **auto-scaling** can make your cloud setup more efficient and reliable.
 
-**Terraform**, an Infrastructure as Code (IaC) tool, allows you to define, provision, and manage cloud resources in a consistent, automated way. By using code to manage infrastructure, Terraform makes it easy to replicate environments, version changes, and ensure consistent deployments.
+**Terraform** is a tool that lets you manage your cloud resources using code. This means you can set up and control your infrastructure in a consistent and automated way, making it easy to duplicate, update, and maintain.
 
-**Load balancing**, on the other hand, plays a crucial role in distributing incoming traffic across multiple servers to ensure high availability and fault tolerance. It prevents any single server from becoming overwhelmed, improving overall application performance.
+**Load balancing** helps spread incoming traffic across several servers so no single server gets overwhelmed. This improves your app’s performance and keeps it available even if one server has issues.
 
-While **auto-scaling** ensures that your infrastructure can automatically adjust its resources based on traffic demand. Whether handling sudden traffic spikes or scaling down during low-traffic periods, auto-scaling helps optimize resource usage, ensuring both performance and cost-efficiency.
+**Auto-scaling** automatically adjusts the number of resources you’re using based on traffic. It scales up during busy times and scales down when things are quieter, which helps with both performance and cost.
 
 Let's see how these technologies work together to build robust and flexible cloud environments.
 
 I once had the opportunity to tackle a challenging yet rewarding task, transforming a client's manually-provisioned AWS infrastructure into a more agile and cost-efficient setup. The client’s web application was struggling to handle traffic spikes due to marketing campaigns and seasonal sales, which led to potential downtime and sometimes over-provisioning costs.
 
-The project required a two-pronged approach: first, I needed to import the existing infrastructure into Terraform to bring it under Infrastructure as Code (IaC) management. This step was crucial for automating and streamlining the existing setup. Next, I implemented an auto-scaling solution to ensure the application could dynamically adjust to varying loads, thus optimizing both performance and costs.
+To tackle this, I used a two-step approach. First, I moved their setup to Terraform, which allowed us to automate and streamline the process. Then, I added auto-scaling to help their system adjust automatically to different traffic levels, making it more efficient and cost-effective.
 
-Join me as I dive into the hands-on details of how I enhanced the client's operational agility and efficiency through these strategic improvements.
+Join me as I dive into the hands-on details of how these changes made the client’s system more agile and effective.
 
 ### Prerequisites
 
@@ -277,6 +277,12 @@ resource "aws_security_group" "launch_wizard_1" {
 }
 ```
 
+### Run the `terraform plan` command.
+ 
+ ```
+ terraform plan
+ ```
+ 
 If all goes well, a result showing that there is nothing to be created/destroyed would be shown, implying that the state of the existing AWS infrastructure and the Terraform state file is in sync.
 
 ### 4. Create an AMI from the running web instance
@@ -624,4 +630,4 @@ To perform load testing with Apache Benchmark (ab), you should run the benchmark
 6. **Commit and Push Final Changes:**
    - Ensure all changes are committed and pushed to your version control repository.
 
-By following these steps, you will successfully import your existing AWS resources into Terraform, convert them into reusable modules, set up auto-scaling, integrate with a load balancer, and ensure the infrastructure is managed effectively with version control, remote state storage, and workspaces.
+In summary, moving from manual to automated cloud setup with tools like Terraform, load balancing, and auto-scaling makes your system more flexible, efficient, and cost-effective. Terraform helps manage everything through code, while load balancing and auto-scaling adjust resources to handle traffic and prevent downtime. This means your application will perform better, be more reliable, and save you money. Using these tools together creates a stronger, smarter cloud environment.
