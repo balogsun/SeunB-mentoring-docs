@@ -20,6 +20,7 @@ Join me as I dive into the hands-on details of how these changes made the client
 
 - An Ubuntu/Linux Environment OR A Windows desktop Environment
 - Github account
+- An EC2 instance running Apache web service
 
 #### Install AWS CLI
 
