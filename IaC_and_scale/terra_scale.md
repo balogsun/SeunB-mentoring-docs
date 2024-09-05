@@ -306,7 +306,12 @@ resource "aws_ami_from_instance" "web_ami" {
 }
 ```
 
-#### Run terraform apply to deploy create the AMI and snapshot, once completed, remove the ami state from the statefile so that the next `terraform apply` command won't create another AMI to overwrite the existing one
+#### Run `terraform apply` command to deploy create the AMI and snapshot, once completed, remove the ami state from the statefile so that the next `terraform apply` command won't create another AMI to overwrite the existing one
+
+![Screenshot 2024-09-02 141654](https://github.com/user-attachments/assets/5a9535a9-7d92-43b0-a373-4a007cf0a5d3)
+
+![Screenshot 2024-09-02 141840](https://github.com/user-attachments/assets/69206cb5-b67e-430f-8480-6a6b0a747fc4)
+
 
 ```bash
 terraform state list
@@ -478,17 +483,27 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu_alarm" {
 }
 ```
 
-### Run terraform apply to deploy the new resources
-
-#### 5. **Initialize and Apply**
+### 5. **Run `terraform apply` to deploy the new resources**
 
  ```bash
- terraform init
  terraform plan
  terraform apply
  ```
 
-## Step 6: Version Control
+![Screenshot 2024-09-02 163659](https://github.com/user-attachments/assets/0efc5b8f-090d-4a45-95c7-eacbcccacd30)
+
+![Screenshot 2024-09-02 163707](https://github.com/user-attachments/assets/f71e0ed9-185b-48d7-9039-6afc3ec01d24)
+
+### COnfirming target group with the first web server registered:
+
+![Screenshot 2024-09-02 183133](https://github.com/user-attachments/assets/32318222-c6fa-403b-bfce-df6da8a80345)
+
+
+### Acessing the web service with the load balancer URL:
+![Screenshot 2024-09-02 182600](https://github.com/user-attachments/assets/600a3aa5-0bf8-46a2-8eb9-6d2e766e5eb4)
+
+
+## Step 6: Version Control (storing your configurations in a secured repository)
 
 1. **Initialize Git Repository:**
    - Initialize a Git repository in your Terraform project directory:
@@ -507,15 +522,17 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu_alarm" {
    git push -u origin main
    ```
 
-## Step 7: Remote State Storage
+## Step 7: Remote State Storage 
 
 1. **Create an S3 bucket to store your Terraform state files:**
 
    ```bash
-   aws s3api create-bucket --bucket seun-terraform-state --region ca-central-1 --create-bucket-configuration LocationConstraint=ca-central-1
+   aws s3api create-bucket --bucket username-terraform-state --region us-east-1 --create-bucket-configuration LocationConstraint=ca-central-1
    ```
 
-   response: "Location": "<http://seun-terraform-state.s3.amazonaws.com/>"
+  ```
+  bash response: "Location": "<http://username-terraform-state.s3.amazonaws.com/>"
+  ```
 
 2. **Update Terraform Configuration for Remote State:**
    The terraform block should be placed at the top level of your Terraform configuration file, outside of any resource blocks.
@@ -538,6 +555,9 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu_alarm" {
    terraform init -reconfigure
    ```
 
+   <img width="483" alt="image" src="https://github.com/user-attachments/assets/139362e1-eb24-412b-bf08-206c1dfe527e">
+
+
    The `-reconfigure` flag tells Terraform to reconfigure the backend with the new settings, even if it was previously initialized.
 
    After running the `terraform init -reconfigure`, Terraform will set up the remote state backend as specified in your `main.tf` file. It will also prompt you to confirm that the state file should be copied to the new backend if you have existing state.
@@ -548,10 +568,14 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu_alarm" {
    ```bash
    terraform init -migrate-state
    ```
+   The local state file contents have now been moved out
+
+   <img width="541" alt="image" src="https://github.com/user-attachments/assets/6f65a296-b933-4493-a4d5-f0a542f20c50">
+
 
 ## Step 8: Terraform Workspaces
 
-1. **Create Terraform Workspaces:**
+1. **Create Terraform Workspaces:** (Optional)
    - You may also set up different workspaces for different environments (e.g., dev, prod), placing a copy of all configuration files in each workspace and naming the resources accordingly.
 
    ```bash
@@ -577,17 +601,10 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu_alarm" {
 
 ## Step 10: Perform Load Testing
 
-To perform load testing with Apache Benchmark (ab), you should run the benchmark tool from a location where you can generate load against your application. Here's a guide on where and how to run it:
+To perform load testing with Apache Benchmark (ab), you should run the benchmark tool from a location where you can generate load against your application. 
 
-### Where to Run Apache Benchmark
+   - For a more controlled environment, you might run the benchmark from an EC2 instance in the same region as your application to reduce latency and network issues. This can also simulate real-world usage more accurately. In the case here, the EC2 instance used was named `ab-test`.
 
-1. **From a Local Machine:**
-   - You can run Apache Benchmark from your local computer, especially if it has sufficient network bandwidth and resources. Ensure that your local machine can reach the load balancer DNS name or IP address.
-
-2. **From an EC2 Instance:**
-   - For a more controlled environment, you might run the benchmark from an EC2 instance in the same region as your application to reduce latency and network issues. This can also simulate real-world usage more accurately.
-
-3. **From a Dedicated Testing Environment:**
    - For more extensive testing, use a dedicated load testing environment or a cloud-based load testing service to generate significant traffic and measure performance under load.
 
 #### 1. **Install Apache Benchmark:**
@@ -615,14 +632,26 @@ To perform load testing with Apache Benchmark (ab), you should run the benchmark
 
 - **Monitor Metrics:** While running the load test, monitor the metrics on the EC2 instance to check its performance (e.g., CPU utilization, memory usage).
 
+ ![Screenshot 2024-09-02 215925](https://github.com/user-attachments/assets/1471b78d-1746-4447-87c1-97782ee1d19c)
+
+
 - **Adjust Parameters:** Depending on your testing requirements, adjust the `-n` and `-c` parameters to simulate different load scenarios.
 
 - **Scale Testing:** For more realistic testing, scale up your load test to simulate higher traffic volumes, especially if you need to test the limits of your Auto Scaling Group and Load Balancer.
 
    Running the benchmark from a location with good network connectivity to your application will give you the most accurate results.
 
+  ![Screenshot 2024-09-02 223535](https://github.com/user-attachments/assets/d0e00069-7596-4fb3-8d9b-e13f80c1d265)
+
+
 3. **Monitor Auto-Scaling:**
    - Observe how the Auto-Scaling Group reacts to the increased load.
+
+     ![Screenshot 2024-09-02 223608](https://github.com/user-attachments/assets/f323105b-dbb3-4e3a-9d5f-bcc738496e13)
+
+     ![Screenshot 2024-09-02 223619](https://github.com/user-attachments/assets/f00ea50d-9153-43f8-9150-6edbb56e9e82)
+     New instance has been launched
+
 
 4. **Examine the Application and its resources:**
    - Ensure the application is running smoothly and the infrastructure scales as expected.
@@ -630,7 +659,20 @@ To perform load testing with Apache Benchmark (ab), you should run the benchmark
 5. **Review Logs and Metrics:**
    - Check the logs and CloudWatch metrics to verify the performance and scaling behavior.
 
-6. **Commit and Push Final Changes:**
+     <img width="482" alt="image" src="https://github.com/user-attachments/assets/184d1dc1-d2a0-4854-b3be-ae5d091106a7">
+
+     CPU load has now dropped as the second instance has accomodated the load.
+
+     ![Screenshot 2024-09-02 223720](https://github.com/user-attachments/assets/0051a9c5-b4f1-4d0b-aa8e-fbd1dd6056d8)
+     The high CPU alarm is now cleared.
+
+     ![Screenshot 2024-09-02 224757](https://github.com/user-attachments/assets/0e427405-1c9b-4882-aa80-f8baa95bcdbe)
+     The low cpu alarm is triggered.
+
+     ![Screenshot 2024-09-02 225316](https://github.com/user-attachments/assets/03df7555-2330-44f9-adc9-2320c46d9b9f)
+     The recently created insance is now terminated.
+
+7. **Commit and Push Final Changes to Git:**
    - Ensure all changes are committed and pushed to your version control repository.
 
-In summary, moving from manual to automated cloud setup with tools like Terraform, load balancing, and auto-scaling makes your system more flexible, efficient, and cost-effective. Terraform helps manage everything through code, while load balancing and auto-scaling adjust resources to handle traffic and prevent downtime. This means your application will perform better, be more reliable, and save you money. Using these tools together creates a stronger, smarter cloud environment.
+Rounding up, moving from manual to automated cloud setup with tools like Terraform, load balancing, and auto-scaling makes your system more flexible, efficient, and cost-effective. Terraform helps manage everything through code, while load balancing and auto-scaling adjust resources to handle traffic and prevent downtime. This means your application will perform better, be more reliable, and save you money. Using these tools together creates a stronger, smarter cloud environment.
