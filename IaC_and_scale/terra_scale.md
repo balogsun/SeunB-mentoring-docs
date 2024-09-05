@@ -1,5 +1,7 @@
 # From Manual to Automated: Optimizing Cloud Infrastructure with Terraform, Load Balancing, and Auto-Scaling
 
+<img width="352" alt="image" src="https://github.com/user-attachments/assets/8ade1741-a537-4bfb-8c1b-47182dc49a73">
+
 Let's dive into how **Terraform**, **load balancing**, and **auto-scaling** can make your cloud setup more efficient and reliable.
 
 **Terraform** is a tool that lets you manage your cloud resources using code. This means you can set up and control your infrastructure in a consistent and automated way, making it easy to duplicate, update, and maintain.
