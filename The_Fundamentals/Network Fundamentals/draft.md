@@ -36,19 +36,25 @@ This report walks through every step—on the **server** and on the **client**�
 
 1. In **Server Manager → Tools → DHCP**, expand your server and right-click **IPv4 → New Scope**.
 
-   * *(screenshot: `dhcp6.jpg` and `dhcp8.jpg`)*
+   * ![dhcp6](https://github.com/user-attachments/assets/21fc0d25-2aff-41f0-9b97-adad6a0c69d3)
+   * ![dhcp8](https://github.com/user-attachments/assets/793e27a0-7ee8-447c-9755-7fd8ba631d2f)
+
+
 2. **Scope Wizard**:
 
    * **Name**: e.g. “Building1 Scope”
    * **IP Range**: `192.168.1.1` to `192.168.1.254`, mask `255.255.255.0`
 
-     * *(screenshot: `dhcp9.jpg`)*
+     * ![dhcp9](https://github.com/user-attachments/assets/052e2938-3293-4599-8862-4bd09aeb5c4f)
+
    * **Exclusions**: reserve `192.168.1.1 – 192.168.1.10` (for routers, servers)
 
-     * *(screenshot: `dhcp10.jpg`)*
+     * ![dhcp10](https://github.com/user-attachments/assets/2ad798f9-7e73-4d49-83ab-233cced62ef4)
+
    * **Lease Duration**: 1 day
 
-     * *(screenshot: `dhcp11.jpg`)*
+     * ![dhcp11](https://github.com/user-attachments/assets/40675141-ff60-4192-be26-b9796e07f4d2)
+
    * **Configure Options** now: set gateway (router IP), DNS server, domain name.
 3. **Result**: VPN clients will receive an IP address from this range when they connect.
 
@@ -58,13 +64,18 @@ This report walks through every step—on the **server** and on the **client**�
 
 1. In **Server Manager → Tools → Routing and Remote Access**, right-click your server → **Configure and Enable Routing and Remote Access**.
 
-   * *(screenshot: `route.jpg`)*
+   * ![route](https://github.com/user-attachments/assets/202d4e24-e38f-4468-a5d7-412cdbedcbb3)
+
 2. In the wizard select **“Virtual private network (VPN) access and NAT”**.
 
-   * *(screenshot: `route2.jpg`)*
+   * ![route2](https://github.com/user-attachments/assets/f31e9034-5758-4044-9fe5-355f210eaf7d)
+
 3. After installation, under **IPv4 → NAT**, right-click and choose **New Interface…**.
 
-   * *(screenshot: `route6.jpg` and `route4.jpg`)*
+   * ![route6](https://github.com/user-attachments/assets/2c93c854-bb14-4bb1-a911-8bb40be2904b)
+   * ![route4](https://github.com/user-attachments/assets/97e17fdb-d94c-466e-b74b-b3f2f0449da9)
+
+
 4. Mark your **public** adapter and check **Enable NAT on this interface**.
 5. **Result**: Remote clients will build a VPN tunnel and can share the server’s public IP to reach the Internet (if desired).
 
@@ -74,29 +85,35 @@ This report walks through every step—on the **server** and on the **client**�
 
 1. In **Server Manager → Tools → Network Policy Server**.
 
-   * *(screenshot: `route15.jpg`)*
+   * ![route15](https://github.com/user-attachments/assets/90cb6839-d896-407f-86ea-4482f2274159)
+
 2. Under **Policies**, select **Network Policies** and open the policy **“Connections to Microsoft Routing and Remote Access server”**.
 
-   * *(screenshot: `route5.jpg`)*
+   * ![route5](https://github.com/user-attachments/assets/ba019ef3-cf47-4a48-8ad2-7acfb4468a4c)
+
 3. **Overview** tab:
 
    * Access Permission → **Grant Access**
    * Type of network access server → **Remote Access Server (VPN-Dial up)**
 4. **Conditions** tab: add **MS-RAS Vendor ID = “311\$”** so only this RRAS is allowed.
 
-   * *(screenshot: `route6.jpg`)*
+   * ![route6](https://github.com/user-attachments/assets/e4a2a956-65a1-4741-b927-2644c4fc5c4e)
+
 5. **Constraints** tab: set
 
    * **Authentication Methods** (e.g. MS-CHAP v2 or EAP)
    * **Idle Timeout** (disconnect after 1 minute of no traffic)
 
-     * *(screenshot: `route8.jpg`)*
+     * ![route8](https://github.com/user-attachments/assets/73481f89-13bb-4620-bb58-c66cd108e237)
+
    * **Session Timeout** (max time per session)
 
-     * *(screenshot: `route14.jpg`)*
+     * ![route14](https://github.com/user-attachments/assets/914d52f8-24c6-42c5-8763-531057abc30f)
+
    * **Day/time restrictions** (here, allowed 24×7)
 
-     * *(screenshot: `route7.jpg`)*
+     * ![route7](https://github.com/user-attachments/assets/7c33faf6-1b03-4793-bade-de8e53cd7b2a)
+
 6. **Result**: Only authorized users can connect over VPN, under the conditions you choose.
 
 ---
@@ -105,7 +122,10 @@ This report walks through every step—on the **server** and on the **client**�
 
 1. In **Remote Access Management Console → Reporting → Configure Accounting**.
 
-   * *(screenshot: `route12.jpg` and `route13.jpg`)*
+   * ![route12](https://github.com/user-attachments/assets/b2bbc345-a8ba-4144-8901-93160f5b0990)
+   * ![route13](https://github.com/user-attachments/assets/9a6bd684-6fcc-497a-b3de-67208c9de846)
+
+
 2. Enable **Use RADIUS accounting** and/or **Use inbox accounting**.
 3. **Result**: The server logs who connected, when, and how much data they used.
 
@@ -117,7 +137,10 @@ This report walks through every step—on the **server** and on the **client**�
 
 1. Open **Settings → Network & Internet → VPN** and click **Add a VPN connection**.
 
-   * *(screenshot: `win-vpn2.jpg` and `win-vpn3.jpg`)*
+   * ![win-vpn1](https://github.com/user-attachments/assets/2cfab204-730e-4390-90e5-6cea3b0d51a8)
+   * ![win-vpn2](https://github.com/user-attachments/assets/76c502ca-4bb2-4453-9914-61ad14907e76)
+   * ![win-vpn3](https://github.com/user-attachments/assets/43a48c1e-f394-4cbd-b6ec-ff8375b8eaba)
+
 2. Fill in:
 
    * **VPN provider**: Windows (built-in)
@@ -125,10 +148,13 @@ This report walks through every step—on the **server** and on the **client**�
    * **Server name or address**: the VPN server’s public name or IP (e.g. `dc01.adatum.ca` or `192.168.1.200`)
    * **VPN type**: **Automatic** (or explicitly choose **SSTP**/**L2TP/IPsec** if you know the server’s protocol)
    * **Sign-in info**: **User name and password**, then type your username (e.g. `Jess`) and password.
-   * *(screenshot: `win-vpn4.jpg` and `win-vpn6.jpg`)*
+   * ![win-vpn5](https://github.com/user-attachments/assets/2f0c5de4-d344-4fff-9fdb-50664a23c32a)
+   * ![win-vpn6](https://github.com/user-attachments/assets/635c42a1-c282-49cb-aadd-0340002338fd)
+
 3. Click **Save**. The profile appears in your VPN list.
 
-   * *(screenshot: `win-vpn5.jpg`)*
+   * ![win-vpn4](https://github.com/user-attachments/assets/3e714381-4877-47bf-a520-11ce213fbe39)
+
 
 ---
 
@@ -136,10 +162,12 @@ This report walks through every step—on the **server** and on the **client**�
 
 1. Select your new VPN entry and click **Advanced options → Edit** to tweak any field.
 
-   * *(screenshot: `win-vpn7.jpg`)*
+   * ![win-vpn7](https://github.com/user-attachments/assets/a65676b0-d75b-4996-ba12-4665a39ad9ce)
+
 2. Finally, hit **Connect**.
 
-   * *(screenshot: `win-vpn8.jpg` and `win-vpn1.jpg`)*
+   * ![win-vpn8](https://github.com/user-attachments/assets/40763f17-3677-4373-a7c6-560bc832fb54)
+
 3. If it fails: go back to **Edit** and choose the exact **VPN type** that matches your server (PPTP, L2TP, SSTP, or IKEv2).
 
 ---
