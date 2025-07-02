@@ -1,7 +1,6 @@
 
 # Setting Up a VPN on Windows Server and Windows 10 Client
 
-This report walks through every step—on the **server** and on the **client**—to build a working VPN.
 ---
 
 ## Part 1: Server-Side Setup (Windows Server 2022)
