@@ -1,0 +1,12 @@
+# Setting Up a VPN on Windows Server and Windows 10 Client
+
+This report walks through every step—on the **server** and on the **client**—to build a working VPN.
+---
+
+## Part 1: Server-Side Setup (Windows Server 2022)
+
+### 1. Install Required Roles
+
+1. Open **Server Manager** and click **Add roles and features**.
+
+   * ![*(screenshot: `add roles2.jpg`)*](file:///c%3A/Users/balog/Desktop/desktop/School/TSOM-SheridanLIBR/Module5-Concepts%20and%20Practical%20Implication%20of%20Encryption/ssl-route-dhcp-vpn/add%20roles2.jpg)
