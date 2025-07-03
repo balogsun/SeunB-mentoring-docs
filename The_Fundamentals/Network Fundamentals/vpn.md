@@ -184,16 +184,15 @@
 
 ## What Each Step Achieves
 
-| Step                         | Goal                                                       |
-| ---------------------------- | ---------------------------------------------------------- |
-| Install Roles & Features     | Give the server DHCP, VPN, routing, and RADIUS services    |
-| Configure DHCP Scope         | Provide IP addresses to VPN and LAN clients                |
-| Enable RRAS (VPN + NAT)      | Create the VPN endpoint and allow traffic forwarding       |
-| Set Up NPS Policies          | Control who and how clients authenticate                   |
-| Enable Accounting (Optional) | Log and report connection activity                         |
-| Add VPN Profile on Client    | Tell Windows 10 how to reach and authenticate with the VPN |
-| Test & Edit Client Profile   | Ensure protocol and credentials match the server settings  |
-
+| Step                         | Goal                                                                                                                                                                                                            |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Install Roles & Features     | add roles to server such as **DHCP Server** **Network Policy and Access Services** role, **Remote Access** roles, along side roles services such as **DirectAccess and VPN (RAS)** and **Routing**). |
+| Configure DHCP Scope         | Provide IP addresses to both VPN and LAN clients by configuring IP ranges, reserving specific addresses, and setting an appropriate lease duration.                                                             |
+| Enable RRAS (VPN + NAT)      | Create the VPN endpoint and allow traffic forwarding by enabling Routing and Remote Access and activating NAT on the server’s public network interface.                                                         |
+| Set Up NPS Policies          | Control who and how clients authenticate by selecting the RRAS service in Network Policy Server, then applying authentication methods plus connection day schedules and idle/session timeout settings.          |
+| Enable Accounting (Optional) | Log and report connection activity by using the Remote Access Management tool to configure RADIUS or inbox accounting for auditing and usage tracking.                                                          |
+| Add VPN Profile on Client    | Tell Windows 10 how to reach and authenticate with the VPN by entering the server’s IP or domain, choosing the correct protocol, and supplying user credentials.                                                |
+| Test & Edit Client Profile   | Ensure the VPN type, server address, and credentials match the server settings; edit the profile and retry until the client successfully connects.  
 ---
 
 **Summary:**
