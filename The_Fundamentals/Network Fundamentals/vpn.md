@@ -186,7 +186,7 @@
 
 | Step                         | Goal                                                                                                                                                                                                            |
 | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Install Roles & Features     | `Add roles` to server, such as **DHCP Server** **Network Policy and Access Services** role, **Remote Access** roles, along side `roles services` such as **DirectAccess and VPN (RAS)** and **Routing**. |
+| Install Roles & Features     | `Add roles` to server, such as **DHCP Server** role, **Network Policy and Access Services** role, **Remote Access** role, along side `roles services` such as **DirectAccess and VPN (RAS)** and **Routing**. |
 | Configure DHCP Scope         | Provide IP addresses to both VPN and LAN clients by configuring IP ranges, reserving specific addresses, and setting an appropriate lease duration.                                                             |
 | Enable RRAS (VPN + NAT)      | Create the VPN endpoint and allow traffic forwarding by enabling Routing and Remote Access and activating NAT on the server’s public network interface.                                                         |
 | Set Up NPS Policies          | Control who and how clients authenticate by selecting the RRAS service in Network Policy Server, then applying authentication methods plus connection day schedules and idle/session timeout settings.          |
