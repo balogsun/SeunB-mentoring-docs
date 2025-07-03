@@ -9,25 +9,27 @@
 
 1. Open **Server Manager** and click **Add roles and features**.
 
-   * ![add roles2](https://github.com/user-attachments/assets/3e768b66-10ba-4e1f-9c91-6bc763357633)
-
+   * ![add roles](https://github.com/user-attachments/assets/c6d24ca1-b87e-4c2d-8656-67ec3ca0d6c8)
 
 2. Choose **Role-based or feature-based installation**, then pick your server (DC01.adatum.ca).
+   
+   *  ![dhcp1](https://github.com/user-attachments/assets/84fb92f2-722e-47cb-ab03-b009546f6fe8)
+   *  ![dhcp2](https://github.com/user-attachments/assets/21ea50a0-0f52-4d72-9502-ffc39a0b337f)
 
-   * ![add roles3](https://github.com/user-attachments/assets/cb7725d1-242f-4703-ab0a-6bc1df3f1672)
-
-3. On **Server Roles**, check:
+4. On **Server Roles**, check:
 
    * **DHCP Server**
    * **Network Policy and Access Services** → **DirectAccess and VPN (RAS)** and **Routing**
-   * ![add roles](https://github.com/user-attachments/assets/127a1409-0956-404d-abab-f6cd8cb9b23a)
-   * ![add roles2](https://github.com/user-attachments/assets/163b2089-f484-4f7b-82f7-12b768a37482)
+   *  ![add roles2](https://github.com/user-attachments/assets/a7c5692c-9867-41a4-b7e3-bba5fabcacf3)
+   *  ![dhcp3](https://github.com/user-attachments/assets/965db896-c1f6-4dfa-85bf-fb12a2597065)
+   *  ![add roles3](https://github.com/user-attachments/assets/cb7725d1-242f-4703-ab0a-6bc1df3f1672)
 
-4. Finish the wizard. This installs:
+5. Finish the wizard. This installs:
 
    * **DHCP** (hands out IPs)
    * **RRAS** (provides VPN & NAT)
    * **NPS** (controls who can connect)
+   * ![dhcp4](https://github.com/user-attachments/assets/0071b73d-79a0-4a54-8e2d-732c44e71fb6)
 
 ---
 
@@ -35,26 +37,31 @@
 
 1. In **Server Manager → Tools → DHCP**, expand your server and right-click **IPv4 → New Scope**.
 
-   * ![dhcp6](https://github.com/user-attachments/assets/21fc0d25-2aff-41f0-9b97-adad6a0c69d3)
-   * ![dhcp8](https://github.com/user-attachments/assets/793e27a0-7ee8-447c-9755-7fd8ba631d2f)
+   * ![dhcp5](https://github.com/user-attachments/assets/1f1d7a94-cf34-42a0-a365-90dec50b236a)
+
+   * ![dhcp6](https://github.com/user-attachments/assets/c0cefba9-9df6-4ee3-82ef-7a5fc791e665)
 
 
 2. **Scope Wizard**:
 
    * **Name**: e.g. “Building1 Scope”
+   * ![dhcp7](https://github.com/user-attachments/assets/4bee857c-f467-4ffe-b942-9c7e4c66d451)
+
    * **IP Range**: `192.168.1.1` to `192.168.1.254`, mask `255.255.255.0`
 
-     * ![dhcp9](https://github.com/user-attachments/assets/052e2938-3293-4599-8862-4bd09aeb5c4f)
+     * !![dhcp8](https://github.com/user-attachments/assets/31c02819-fe19-4997-9c8a-3bfcf94dce0a)
 
    * **Exclusions**: reserve `192.168.1.1 – 192.168.1.10` (for routers, servers)
 
-     * ![dhcp10](https://github.com/user-attachments/assets/2ad798f9-7e73-4d49-83ab-233cced62ef4)
+     * ![dhcp9](https://github.com/user-attachments/assets/24caaae8-71e9-4134-b546-d15071b0fbc3)
 
    * **Lease Duration**: 1 day
 
-     * ![dhcp11](https://github.com/user-attachments/assets/40675141-ff60-4192-be26-b9796e07f4d2)
+     * ![dhcp10](https://github.com/user-attachments/assets/f9e93ab1-e458-4f34-a811-53ef4a2f7c1b)
 
    * **Configure Options** now: set gateway (router IP), DNS server, domain name.
+   * ![dhcp11](https://github.com/user-attachments/assets/08806103-0c52-408f-892a-d4b051658dc9)
+
 3. **Result**: VPN clients will receive an IP address from this range when they connect.
 
 ---
@@ -63,20 +70,18 @@
 
 1. In **Server Manager → Tools → Routing and Remote Access**, right-click your server → **Configure and Enable Routing and Remote Access**.
 
-   * ![route](https://github.com/user-attachments/assets/202d4e24-e38f-4468-a5d7-412cdbedcbb3)
-
 2. In the wizard select **“Virtual private network (VPN) access and NAT”**.
 
-   * ![route2](https://github.com/user-attachments/assets/f31e9034-5758-4044-9fe5-355f210eaf7d)
+   * ![route1](https://github.com/user-attachments/assets/92348b56-9ee1-4e3e-a354-58a627655199)
 
 3. After installation, under **IPv4 → NAT**, right-click and choose **New Interface…**.
 
-   * ![route6](https://github.com/user-attachments/assets/2c93c854-bb14-4bb1-a911-8bb40be2904b)
-   * ![route4](https://github.com/user-attachments/assets/97e17fdb-d94c-466e-b74b-b3f2f0449da9)
-
+   * ![route](https://github.com/user-attachments/assets/ceae8517-8667-415b-80ca-194cf50a0dad)
 
 4. Mark your **public** adapter and check **Enable NAT on this interface**.
-5. **Result**: Remote clients will build a VPN tunnel and can share the server’s public IP to reach the Internet (if desired).
+   * ![route2](https://github.com/user-attachments/assets/3cee780d-eaa5-46c4-8970-825cce4e36d6)
+
+6. **Result**: Remote clients will build a VPN tunnel and can share the server’s public IP to reach the Internet (if desired).
 
 ---
 
@@ -84,34 +89,35 @@
 
 1. In **Server Manager → Tools → Network Policy Server**.
 
-   * ![route15](https://github.com/user-attachments/assets/90cb6839-d896-407f-86ea-4482f2274159)
+   * ![route4](https://github.com/user-attachments/assets/41a520ea-9616-4745-bc98-5c0cbc0e65b4)
 
 2. Under **Policies**, select **Network Policies** and open the policy **“Connections to Microsoft Routing and Remote Access server”**.
-
-   * ![route5](https://github.com/user-attachments/assets/ba019ef3-cf47-4a48-8ad2-7acfb4468a4c)
 
 3. **Overview** tab:
 
    * Access Permission → **Grant Access**
    * Type of network access server → **Remote Access Server (VPN-Dial up)**
+   *  ![route9](https://github.com/user-attachments/assets/85335c7f-2ce7-4785-8165-e5bb4ae790a0)
+
+   *  ![route5](https://github.com/user-attachments/assets/ba019ef3-cf47-4a48-8ad2-7acfb4468a4c)
+     
 4. **Conditions** tab: add **MS-RAS Vendor ID = “311\$”** so only this RRAS is allowed.
 
    * ![route6](https://github.com/user-attachments/assets/e4a2a956-65a1-4741-b927-2644c4fc5c4e)
+  
+   * ![route7](https://github.com/user-attachments/assets/6c9b80e2-9167-4616-9cab-6f2f285b7249)
 
 5. **Constraints** tab: set
 
    * **Authentication Methods** (e.g. MS-CHAP v2 or EAP)
    * **Idle Timeout** (disconnect after 1 minute of no traffic)
 
-     * ![route8](https://github.com/user-attachments/assets/73481f89-13bb-4620-bb58-c66cd108e237)
+     * ![route8](https://github.com/user-attachments/assets/c34a8f39-3981-4da9-91af-573687fcf82d)
 
    * **Session Timeout** (max time per session)
-
-     * ![route14](https://github.com/user-attachments/assets/914d52f8-24c6-42c5-8763-531057abc30f)
+   * ![route15](https://github.com/user-attachments/assets/a6625bd4-738f-428b-97e1-c6485c502a44)
 
    * **Day/time restrictions** (here, allowed 24×7)
-
-     * ![route7](https://github.com/user-attachments/assets/7c33faf6-1b03-4793-bade-de8e53cd7b2a)
 
 6. **Result**: Only authorized users can connect over VPN, under the conditions you choose.
 
@@ -121,12 +127,15 @@
 
 1. In **Remote Access Management Console → Reporting → Configure Accounting**.
 
-   * ![route12](https://github.com/user-attachments/assets/b2bbc345-a8ba-4144-8901-93160f5b0990)
-   * ![route13](https://github.com/user-attachments/assets/9a6bd684-6fcc-497a-b3de-67208c9de846)
+   * ![route10](https://github.com/user-attachments/assets/479ae4d6-fd5c-4e4a-879f-fec8558dbdb3)
 
+   * ![route11](https://github.com/user-attachments/assets/aab8f03e-492b-4b3c-8a18-cc3709ea8f35)
+   * ![route12](https://github.com/user-attachments/assets/82db0ecf-9ba2-4e44-859b-c7884a7ba954)
 
 2. Enable **Use RADIUS accounting** and/or **Use inbox accounting**.
-3. **Result**: The server logs who connected, when, and how much data they used.
+   * ![route13](https://github.com/user-attachments/assets/a3ac254d-3567-496f-8f6c-db3b928eaeb6)
+     
+4. **Result**: The server logs who connected, when, and how much data they used.
 
 ---
 
@@ -138,7 +147,7 @@
 
    * ![win-vpn1](https://github.com/user-attachments/assets/2cfab204-730e-4390-90e5-6cea3b0d51a8)
    * ![win-vpn2](https://github.com/user-attachments/assets/76c502ca-4bb2-4453-9914-61ad14907e76)
-   * ![win-vpn3](https://github.com/user-attachments/assets/43a48c1e-f394-4cbd-b6ec-ff8375b8eaba)
+   
 
 2. Fill in:
 
@@ -147,25 +156,27 @@
    * **Server name or address**: the VPN server’s public name or IP (e.g. `dc01.adatum.ca` or `192.168.1.200`)
    * **VPN type**: **Automatic** (or explicitly choose **SSTP**/**L2TP/IPsec** if you know the server’s protocol)
    * **Sign-in info**: **User name and password**, then type your username (e.g. `Jess`) and password.
+   * ![win-vpn3](https://github.com/user-attachments/assets/43a48c1e-f394-4cbd-b6ec-ff8375b8eaba)
    * ![win-vpn5](https://github.com/user-attachments/assets/2f0c5de4-d344-4fff-9fdb-50664a23c32a)
-   * ![win-vpn6](https://github.com/user-attachments/assets/635c42a1-c282-49cb-aadd-0340002338fd)
-
+   
 3. Click **Save**. The profile appears in your VPN list.
 
    * ![win-vpn4](https://github.com/user-attachments/assets/3e714381-4877-47bf-a520-11ce213fbe39)
-
-
+  
 ---
 
 ### 2. Edit or Test the Connection
 
 1. Select your new VPN entry and click **Advanced options → Edit** to tweak any field.
 
+   * ![win-vpn6](https://github.com/user-attachments/assets/635c42a1-c282-49cb-aadd-0340002338fd)
    * ![win-vpn7](https://github.com/user-attachments/assets/a65676b0-d75b-4996-ba12-4665a39ad9ce)
+   * ![win-vpn8](https://github.com/user-attachments/assets/15b531af-7ad4-430e-abac-726e912e2e8c)
+
 
 2. Finally, hit **Connect**.
 
-   * ![win-vpn8](https://github.com/user-attachments/assets/40763f17-3677-4373-a7c6-560bc832fb54)
+  * ![win-vpn4](https://github.com/user-attachments/assets/3e714381-4877-47bf-a520-11ce213fbe39)
 
 3. If it fails: go back to **Edit** and choose the exact **VPN type** that matches your server (PPTP, L2TP, SSTP, or IKEv2).
 
