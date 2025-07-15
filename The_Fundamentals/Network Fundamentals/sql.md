@@ -269,7 +269,7 @@ SELECT * FROM staff;
 
 ## 1. Aggregation by Date in Toad for Oracle
 
-A simple **aggregation** by date, useful for daily volume reports.
+A simple **aggregation** by date, useful for daily volume reports. Toad for Oracle, running a simple `SELECT … GROUP BY` to inspect daily transaction counts.
 
 **SQL:**
 
@@ -407,7 +407,7 @@ WHERE
 
 ## 3. Multi-Table JOIN with Aggregation and LEFT JOIN
 
-Combines **multi-table joins**, a **LEFT JOIN**, and **aggregation** to produce per-customer spending summaries—even capturing customers with zero payments.
+Combines **multi-table joins**, a **LEFT JOIN**, and **aggregation** to produce per-customer spending summaries—even capturing customers with zero payments. The SQL IDE, combining `customers`, `orders`, `orderdetails`, and optionally `payments` to compute how much each customer has spent.
 
 **SQL:**
 
