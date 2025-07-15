@@ -594,7 +594,7 @@ RIGHT JOIN customers ON orders.customernumber = customers.customernumber;
 
 Please write a query for the following output –
 The total amount spent by each customer on all the orders placed
-**Required columns** – Customer Name (Fname, Lname), postalcode, credit limit, amount spent
+>**Required columns** – Customer Name (Fname, Lname), postalcode, credit limit, amount spent
 
 ```sql
 SELECT
